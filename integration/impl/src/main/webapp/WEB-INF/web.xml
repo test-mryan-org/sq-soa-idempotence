@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+		 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+	<!-- SQ rest servlet configuration. Please don't modify it unless you know what you do -->
+
+	<display-name>sq-soa-idempotence-integration-soa</display-name>
+
+	<context-param>
+		<param-name>application-name</param-name>
+		<param-value>sq-soa-idempotence-integration-soa</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>sq.soa.MyService-V1</param-name>
+		<param-value>
+			com.swissquote.crm.idempotency.rest.v1,
+			com.swissquote.foundation.monitoring.metrics.jersey.server,
+			com.swissquote.crm.idempotency.rest.provider
+		</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>sq.soa.legacy.apis</param-name>
+		<param-value>MyService-V1</param-value>
+	</context-param>
+	
+	<!--
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:applicationContext.xml</param-value>
+	</context-param>
+	-->
+
+
+	<!-- BEGIN LOGGING -->
+	<listener>
+		<listener-class>com.swissquote.foundation.soa.service.logging.JulToSlf4jActivator</listener-class>
+	</listener>
+	
+	<!--Jersey debugging context params. See com.sun.jersey.api.core.ResourceConfig for all available features -->
+	<!-- client filters -->
+	<context-param>
+		<param-name>com.sun.jersey.spi.container.ContainerResponseFilters</param-name>
+		<param-value>com.sun.jersey.api.container.filter.LoggingFilter</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
+		<param-value>com.sun.jersey.api.container.filter.LoggingFilter</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>com.sun.jersey.config.feature.Trace</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	
+	<!--
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	-->
+
+</web-app>
