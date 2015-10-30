@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.swissquote.crm</groupId>
+		<artifactId>sq-soa-idempotence-integration</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>sq-soa-idempotence-integration-soa</artifactId>
+	<name>sq-soa-idempotence-integration-soa</name>
+	<packaging>war</packaging>
+
+	<properties>
+
+		<sq.artifact.type>soa</sq.artifact.type>
+
+
+		<jetty.version>9.1.2.v20140210</jetty.version>
+		<!-- <jetty.version>8.1.9.v20130131</jetty.version> -->
+		<jetty.config.path>config</jetty.config.path>
+
+		<!-- tests -->
+		<tomcat.version>8.0.24</tomcat.version>
+		<system-rules.version>1.12.1</system-rules.version>
+		<sq-soa-platform.version>1.3.2</sq-soa-platform.version>
+		<jersey.version>1.18</jersey.version>
+		<sq-it-config.version>3.1.4</sq-it-config.version>
+
+
+		<!-- WARNING, also update web.xml jersey package scanning if you change 
+			this -->
+		<!-- This is used for Doc generation and api/impl resource validation -->
+		<resources.package>com.swissquote.crm.idempotency.rest.resources</resources.package>
+	</properties>
+
+	<dependencies>
+
+		<!-- the API implemented by the service -->
+		<dependency>
+			<groupId>com.swissquote.crm</groupId>
+			<artifactId>sq-soa-idempotence-integration-api-v1</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.swissquote.crm</groupId>
+			<artifactId>sqc-idempotent-operation</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+
+		<!-- Configuration -->
+		<dependency>
+			<groupId>com.swissquote.foundation</groupId>
+			<artifactId>sq-it-config-spring</artifactId>
+			<version>${sq-it-config.version}</version>
+		</dependency>
+
+		<!-- Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		</dependency>
+
+		<!-- SOA platform -->
+		<dependency>
+			<groupId>com.swissquote.foundation.soa</groupId>
+			<artifactId>sq-soa-service-jersey</artifactId>
+			<version>${sq-soa-platform.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.swissquote.foundation.soa</groupId>
+			<artifactId>sq-soa-client-jersey</artifactId>
+			<version>${sq-soa-platform.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.swissquote.foundation.soa</groupId>
+			<artifactId>sq-soa-support-api</artifactId>
+			<version>${sq-soa-platform.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+
+		<!-- Jersey + Spring -->
+		<dependency>
+			<groupId>com.sun.jersey.contribs</groupId>
+			<artifactId>jersey-spring</artifactId>
+			<version>${jersey.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-web</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+
+		<!-- test dependencies -->
+
+		<dependency>
+			<groupId>com.swissquote.foundation</groupId>
+			<artifactId>sq-it-config-test</artifactId>
+			<version>${sq-it-config.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-beans</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-aop</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-expression</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+
+			<!-- api validation -->
+			<plugin>
+				<groupId>com.swissquote.foundation.soa</groupId>
+				<artifactId>sq-soa-support-api-validation-plugin</artifactId>
+				<version>${sq-soa-platform.version}</version>
+				<configuration>
+					<packages>
+						com.swissquote.crm.idempotency.rest.v1.resources
+					</packages>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>validate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-antrun-plugin</artifactId> 
+				<executions> <execution> <id>prepareConfigDirectory</id> <phase>process-resources</phase> 
+				<configuration> <target> <rename src="${jetty.config.path}/artifactId" dest="${jetty.config.path}/sqc-idempotent-operation-integration"/> 
+				</target> </configuration> <goals> <goal>run</goal> </goals> </execution> 
+				</executions> </plugin> -->
+
+			<plugin>
+				<!-- <groupId>org.mortbay.jetty</groupId> <artifactId>jetty-maven-plugin</artifactId> -->
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>9.2.13.v20150730</version>
+				<configuration>
+					<scanIntervalSeconds>1</scanIntervalSeconds>
+					<war>${project.basedir}/target/sq-soa-idempotence-integration-soa-${project.version}.war</war>
+					<webApp>
+						<contextPath>/sq-soa-idempotence-integration-soa</contextPath>
+					</webApp>
+				    <loginServices>
+				      <loginService implementation="org.eclipse.jetty.security.HashLoginService">
+				        <name>Test Realm</name>
+				        <config>${project.basedir}/realm.properties</config>
+				      </loginService>
+				    </loginServices>					
+					
+					<systemProperties>
+						<systemProperty>
+							<name>java.security.manager</name>
+							<value>true</value>
+						</systemProperty>
+						<systemProperty>
+							<name>java.security.policy</name>
+							<value>file:${project.basedir}/jetty.policy</value>
+						</systemProperty>
+						<systemProperty>
+							<name>sq.env.type</name>
+							<value>dev</value>
+						</systemProperty>
+						<systemProperty>
+							<name>sq.itconfig.path</name>
+							<value>${project.basedir}/it_config</value>
+						</systemProperty>
+						<systemProperty>
+							<name>imqSSLIsHostTrusted</name>
+							<value>true</value>
+						</systemProperty>
+						<systemProperty>
+							<name>sq.webapp.logdir</name>
+							<value>${project.build.directory}</value>
+						</systemProperty>
+					</systemProperties>
+					<!-- Configure to match extraClasspath if you want auto-reload -->
+					<!--<scanTargetPatterns> -->
+					<!--<scanTargetPattern> -->
+					<!--<directory>../$OTHER_PROJECT/target/classes</directory> -->
+					<!--<includes> -->
+					<!--<include>**/*</include> -->
+					<!--</includes> -->
+					<!--</scanTargetPattern> -->
+					<!--</scanTargetPatterns> -->
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>log4j</groupId>
+						<artifactId>log4j</artifactId>
+						<version>1.2.16</version>
+					</dependency>
+					<dependency>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-api</artifactId>
+						<version>1.7.5</version>
+					</dependency>
+					<dependency>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-log4j12</artifactId>
+						<version>1.7.5</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+
+			<!-- development mode -->
+			<plugin>
+				<!-- Test query -->
+				<!-- curl -v __noproxy localhost -u dev:dev http://localhost:8080/sq-soa-idempotence-integration-soa/api/MyService-V1/ping/world -->
+				<!-- curl -v __noproxy localhost -u dev:dev http://localhost:8080/sq-soa-idempotence-integration-soa/api/MyService-V1/ping/world -->
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<port>8084</port>
+					<path>/sq-soa-idempotence-integration-soa</path>
+					<systemProperties>
+						<!-- to log in the console -->
+						<log4j.configurationFile>classpath:log4j2-console.xml</log4j.configurationFile>
+						<sq.itconfig.path>${project.basedir}/it_config</sq.itconfig.path>
+					</systemProperties>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>
