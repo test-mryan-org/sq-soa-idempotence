@@ -16,3 +16,8 @@ syntax: regexp
 syntax: regexp
 ^integration/impl/target$
 
+
+syntax: regexp
+^integration/api-v1/\.settings$
+syntax: regexp
+^lib/target$
