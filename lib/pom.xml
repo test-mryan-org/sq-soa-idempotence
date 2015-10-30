@@ -10,8 +10,9 @@
 		<relativePath />
 	</parent>
 
-	<version>1.0.0-SNAPSHOT</version>
+	<groupId>com.swissquote.foundation.soa</groupId>
 	<artifactId>sq-soa-idempotence</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>SQ SOA Idempotence</name>
 

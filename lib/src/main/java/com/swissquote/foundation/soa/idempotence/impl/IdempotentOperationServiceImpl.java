@@ -33,37 +33,6 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 		return operationManager.createNewOperation();
 	}
 
-	@Override
-	public Long generateRequestId(String externalRequestId) {
-
-		return operationManager.createNewOperation(externalRequestId);
-	}
-
-	private <T> void processException(final IdempotentOperation<T> operation, Exception exception) {
-		LOGGER.debug("Unable to finish correctly due to an exception. Saving the exception ...");
-
-		Result result = operationManager.markAsFailed(operation, exception);
-
-		if (result.failed()) {
-			LOGGER.error("Unable to save the exception ...", exception);
-		}
-	}
-
-	private <T> T processSuccess(final IdempotentOperation<T> operation, T processingResponse) {
-		LOGGER.debug("Job processing finished correctly. Saving the response  ...");
-
-		Result result = operationManager.markAsFinished(operation, processingResponse);
-
-		if (result.failed()) {
-			LOGGER.debug("Unable to save the result ...");
-
-			return handleUnableToFinish(operation, result);
-		}
-
-		LOGGER.debug("Returning the response ...");
-		return processingResponse;
-	}
-
 	/**
 	 * Method that processes in an idempotent manner the operation that is encapsulated in the parameter. It returns either the predefined
 	 * response for an "in progress operation" or the result of the encapsulated operation.
@@ -108,6 +77,31 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 			throw new ServiceException(exception);
 		}
 		return processSuccess(operation, processingResponse);
+	}
+
+	private <T> void processException(final IdempotentOperation<T> operation, Exception exception) {
+		LOGGER.debug("Unable to finish correctly due to an exception. Saving the exception ...");
+
+		Result result = operationManager.markAsFailed(operation, exception);
+
+		if (result.failed()) {
+			LOGGER.error("Unable to save the exception ...", exception);
+		}
+	}
+
+	private <T> T processSuccess(final IdempotentOperation<T> operation, T processingResponse) {
+		LOGGER.debug("Job processing finished correctly. Saving the response  ...");
+
+		Result result = operationManager.markAsFinished(operation, processingResponse);
+
+		if (result.failed()) {
+			LOGGER.debug("Unable to save the result ...");
+
+			return handleUnableToFinish(operation, result);
+		}
+
+		LOGGER.debug("Returning the response ...");
+		return processingResponse;
 	}
 
 	/**
