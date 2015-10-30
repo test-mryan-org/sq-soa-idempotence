@@ -1,4 +1,4 @@
-package com.swissquote.crm.idempotency.rest.provider;
+package com.swissquote.foundation.soa.idempotency.rest.provider;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;

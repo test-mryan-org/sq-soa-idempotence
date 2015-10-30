@@ -1,4 +1,4 @@
-package com.swissquote.crm.idempotency.rest.v1.resources;
+package com.swissquote.foundation.soa.idempotency.rest.v1.resources;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
 import com.sun.jersey.api.core.InjectParam;
-import com.swissquote.crm.idempotency.GreetingsService;
-import com.swissquote.crm.idempotency.api.v1.entities.ClientId;
-import com.swissquote.crm.idempotency.api.v1.resources.PingResource;
+import com.swissquote.foundation.soa.idempotency.GreetingsService;
+import com.swissquote.foundation.soa.idempotency.rest.api.v1.entities.ClientId;
+import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.PingResource;
 import com.swissquote.foundation.soa.support.api.exceptions.ServiceException;
 
 @Path("MyService-V1/ping")

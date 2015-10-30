@@ -1,4 +1,4 @@
-package com.swissquote.crm.idempotency.api.v1.resources;
+package com.swissquote.foundation.soa.idempotency.rest.api.v1.resources;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
@@ -8,7 +8,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.swissquote.crm.idempotency.api.v1.entities.ClientId;
+import com.swissquote.foundation.soa.idempotency.rest.api.v1.entities.ClientId;
 
 @Path("MyService-V1/ping")
 public interface PingResource {

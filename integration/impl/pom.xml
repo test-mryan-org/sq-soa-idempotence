@@ -35,21 +35,21 @@
 		<!-- WARNING, also update web.xml jersey package scanning if you change 
 			this -->
 		<!-- This is used for Doc generation and api/impl resource validation -->
-		<resources.package>com.swissquote.crm.idempotency.rest.resources</resources.package>
+		<resources.package>com.swissquote.foundation.soa.idempotency.rest.resources</resources.package>
 	</properties>
 
 	<dependencies>
 
 		<!-- the API implemented by the service -->
 		<dependency>
-			<groupId>com.swissquote.crm</groupId>
+			<groupId>com.swissquote.foundation.soa</groupId>
 			<artifactId>sq-soa-idempotence-integration-api-v1</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
-			<groupId>com.swissquote.crm</groupId>
-			<artifactId>sqc-idempotent-operation</artifactId>
+			<groupId>com.swissquote.foundation.soa</groupId>
+			<artifactId>sq-soa-idempotence</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 
@@ -198,7 +198,7 @@
 				<version>${sq-soa-platform.version}</version>
 				<configuration>
 					<packages>
-						com.swissquote.crm.idempotency.rest.v1.resources
+						com.swissquote.foundation.soa.idempotency.rest.v1.resources
 					</packages>
 				</configuration>
 				<executions>
@@ -210,20 +210,26 @@
 					</execution>
 				</executions>
 			</plugin>
-
-			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-antrun-plugin</artifactId> 
-				<executions> <execution> <id>prepareConfigDirectory</id> <phase>process-resources</phase> 
-				<configuration> <target> <rename src="${jetty.config.path}/artifactId" dest="${jetty.config.path}/sqc-idempotent-operation-integration"/> 
-				</target> </configuration> <goals> <goal>run</goal> </goals> </execution> 
-				</executions> </plugin> -->
-
 			<plugin>
 				<!-- <groupId>org.mortbay.jetty</groupId> <artifactId>jetty-maven-plugin</artifactId> -->
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
 				<version>9.2.13.v20150730</version>
+				<executions>
+					<execution>
+						<id>start-jetty</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<!-- stop any previous instance to free up the port -->
+							<goal>stop</goal>
+							<goal>start</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
 					<scanIntervalSeconds>1</scanIntervalSeconds>
+					<stopPort>8005</stopPort>
+					<stopKey>STOP</stopKey>					
 					<war>${project.basedir}/target/sq-soa-idempotence-integration-soa-${project.version}.war</war>
 					<webApp>
 						<contextPath>/sq-soa-idempotence-integration-soa</contextPath>
@@ -234,7 +240,6 @@
 				        <config>${project.basedir}/realm.properties</config>
 				      </loginService>
 				    </loginServices>					
-					
 					<systemProperties>
 						<systemProperty>
 							<name>java.security.manager</name>
@@ -261,15 +266,6 @@
 							<value>${project.build.directory}</value>
 						</systemProperty>
 					</systemProperties>
-					<!-- Configure to match extraClasspath if you want auto-reload -->
-					<!--<scanTargetPatterns> -->
-					<!--<scanTargetPattern> -->
-					<!--<directory>../$OTHER_PROJECT/target/classes</directory> -->
-					<!--<includes> -->
-					<!--<include>**/*</include> -->
-					<!--</includes> -->
-					<!--</scanTargetPattern> -->
-					<!--</scanTargetPatterns> -->
 				</configuration>
 				<dependencies>
 					<dependency>
@@ -289,6 +285,24 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-failsafe-plugin</artifactId>
+			<executions>
+				<execution>
+					<id>integration-test</id>
+					<goals>
+						<goal>integration-test</goal>
+					</goals>
+				</execution>
+				<execution>
+					<id>verify</id>
+					<goals>
+						<goal>verify</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>			
 
 
 			<!-- development mode -->

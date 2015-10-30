@@ -12,7 +12,7 @@
 
 	<!-- the ITConfig PropertySource is integrated automatically by sq-it-config-spring -->
 
-	<bean id="greetingsService" class="com.swissquote.crm.idempotency.GreetingsService">
+	<bean id="greetingsService" class="com.swissquote.foundation.soa.idempotency.GreetingsService">
 		<constructor-arg name="greetingsSentence" value="${app.sq-soa-idempotence-integration-soa>greetings.sentence}"/>
 	</bean>
 

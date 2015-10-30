@@ -1,4 +1,4 @@
-package com.swissquote.crm.idempotency.api.v1.entities;
+package com.swissquote.foundation.soa.idempotency.rest.api.v1.entities;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;

@@ -1,4 +1,4 @@
-package com.swissquote.crm.idempotency.api.v1.resources;
+package com.swissquote.foundation.soa.idempotency.rest.api.v1.resources;
 
 public interface IdempotentOperationResource {
 

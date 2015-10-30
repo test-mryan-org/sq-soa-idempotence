@@ -15,9 +15,9 @@
 	<context-param>
 		<param-name>sq.soa.MyService-V1</param-name>
 		<param-value>
-			com.swissquote.crm.idempotency.rest.v1,
+			com.swissquote.foundation.soa.idempotency.rest.v1,
+			com.swissquote.foundation.soa.idempotency.rest.provider
 			com.swissquote.foundation.monitoring.metrics.jersey.server,
-			com.swissquote.crm.idempotency.rest.provider
 		</param-value>
 	</context-param>
 

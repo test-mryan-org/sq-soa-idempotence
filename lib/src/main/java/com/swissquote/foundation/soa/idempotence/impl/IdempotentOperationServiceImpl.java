@@ -117,9 +117,9 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 			case IN_PROGRESS:
 				return handleInProgress(operation);
 			case ALREADY_FINISHED_WITH_EXCEPTION:
-				throw handleFinishedWithException(result);
+				throw handleFinishedWithException(operation, result);
 			case ALREADY_FINISHED:
-				return (T) handleAlreadyFinished(result);
+				return handleAlreadyFinished(operation, result);
 			case UNKNOWN:
 			default:
 				throw new IllegalArgumentException("Unknown reason!");
@@ -154,7 +154,6 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	 */
 	protected <T> T handleInProgress(final IdempotentOperation<T> operation) {
 		LOGGER.debug("The operation is in progress. Returning the predefined response ...");
-
 		return operation.getInProgressResponse();
 	}
 
@@ -162,19 +161,17 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	 * @param result
 	 * @return
 	 */
-	protected RuntimeException handleFinishedWithException(final Result result) {
+	protected <T> BusinessCheckedException handleFinishedWithException(final IdempotentOperation<T> operation, final Result result) {
 		LOGGER.debug("The operation has finished already. An exception was thrown during its execution. Returning saved exception ...");
-
-		return result.getException();
+		return operationManager.getException(operation);
 	}
 
 	/**
 	 * @param result
 	 * @return
 	 */
-	protected Object handleAlreadyFinished(final Result result) {
+	protected <T> T handleAlreadyFinished(final IdempotentOperation<T> operation, final Result result) {
 		LOGGER.debug("The operation has finished already. Returning saved response ...");
-
-		return result.getResult();
+		return operationManager.getResult(operation);
 	}
 }

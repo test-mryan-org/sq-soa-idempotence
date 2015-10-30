@@ -1,10 +1,7 @@
 package com.swissquote.foundation.soa.idempotence;
 
 public class Result {
-
 	private final Status status;
-	private RuntimeException exception;
-	private Object result;
 
 	public static enum Status {
 		SUCCESS(true), //
@@ -30,21 +27,9 @@ public class Result {
 		}
 	}
 
-	public Result(final Status status) {
+	private Result(final Status status) {
 		super();
 		this.status = status;
-	}
-
-	public Result(final Status status, final RuntimeException exception) {
-		super();
-		this.status = status;
-		this.exception = exception;
-	}
-
-	public Result(final Status status, final Object result) {
-		super();
-		this.status = status;
-		this.result = result;
 	}
 
 	public boolean failed() {
@@ -55,12 +40,7 @@ public class Result {
 		return status;
 	}
 
-	public RuntimeException getException() {
-		return exception;
+	public static Result forStatus(final Status status) {
+		return new Result(status);
 	}
-
-	public Object getResult() {
-		return result;
-	}
-
 }

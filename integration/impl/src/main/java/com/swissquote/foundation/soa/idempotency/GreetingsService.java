@@ -1,4 +1,4 @@
-package com.swissquote.crm.idempotency;
+package com.swissquote.foundation.soa.idempotency;
 
 import java.beans.ConstructorProperties;
 
