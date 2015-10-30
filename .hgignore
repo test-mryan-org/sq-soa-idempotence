@@ -1,0 +1,18 @@
+
+syntax: regexp
+\.classpath$
+syntax: regexp
+^lib/\.settings$
+syntax: regexp
+^integration/api-v1/\.classpath$
+syntax: regexp
+^integration/impl/\.settings$
+syntax: regexp
+^integration/impl/target$
+syntax: regexp
+^integration/api-v1/target$
+syntax: regexp
+\.project$
+syntax: regexp
+^integration/impl/target$
+
