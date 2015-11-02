@@ -140,6 +140,11 @@
 		<!-- test dependencies -->
 
 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.swissquote.foundation</groupId>
 			<artifactId>sq-it-config-test</artifactId>
 			<version>${sq-it-config.version}</version>
@@ -302,6 +307,11 @@
 					</goals>
 				</execution>
 			</executions>
+			<configuration>
+				<systemPropertyVariables>
+					<sq.itconfig.path>${project.basedir}/src/test/resources/it_config</sq.itconfig.path>
+				</systemPropertyVariables>
+			</configuration>			
 		</plugin>			
 
 

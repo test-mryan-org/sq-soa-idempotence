@@ -33,7 +33,7 @@ public class PingResourceImpl implements PingResource {
 	@GET
 	@Path("{client}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	@RolesAllowed("ROLE_PING")
 	@Override
 	public String ping(@PathParam("client") ClientId client) {
@@ -45,7 +45,6 @@ public class PingResourceImpl implements PingResource {
 			exception.setHttpCode(HttpStatus.BAD_REQUEST.value());
 			throw exception;
 		}
-		//return "{'a':'A'}";
 		return service.greetings(client.getClient());
 	}
 

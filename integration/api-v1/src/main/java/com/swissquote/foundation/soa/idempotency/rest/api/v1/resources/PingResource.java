@@ -16,7 +16,7 @@ public interface PingResource {
 	@GET
 	@Path("{client}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	@RolesAllowed("ROLE_PING")
 	String ping(@PathParam("client") ClientId client);
 
