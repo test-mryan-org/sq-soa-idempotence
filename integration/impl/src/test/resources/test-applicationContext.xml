@@ -34,5 +34,9 @@
    	<bean id="pingResource" class="com.swissquote.foundation.soa.client.spring.WebProxyFactoryBean">
         <property name="resourceInterface" value="com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.PingResource"/>
     </bean>
+
+   	<bean id="idempotentOperationResource" class="com.swissquote.foundation.soa.client.spring.WebProxyFactoryBean">
+        <property name="resourceInterface" value="com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.IdempotentOperationResource"/>
+    </bean>
     
 </beans>

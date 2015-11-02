@@ -10,7 +10,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.swissquote.foundation.soa.idempotency.rest.api.v1.entities.ClientId;
 
-@Path("MyService-V1/ping")
+@Path(Module.NAME + "/ping")
 public interface PingResource {
 
 	@GET

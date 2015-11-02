@@ -15,10 +15,11 @@ import org.springframework.http.HttpStatus;
 import com.sun.jersey.api.core.InjectParam;
 import com.swissquote.foundation.soa.idempotency.GreetingsService;
 import com.swissquote.foundation.soa.idempotency.rest.api.v1.entities.ClientId;
+import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.Module;
 import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.PingResource;
 import com.swissquote.foundation.soa.support.api.exceptions.ServiceException;
 
-@Path("MyService-V1/ping")
+@Path(Module.NAME + "/ping")
 public class PingResourceImpl implements PingResource {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PingResourceImpl.class);
 
