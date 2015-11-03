@@ -16,4 +16,10 @@
 		<constructor-arg name="greetingsSentence" value="${app.sq-soa-idempotence-integration-soa>greetings.sentence}"/>
 	</bean>
 
+	<bean class="com.swissquote.foundation.soa.idempotence.impl.IdempotentOperationServiceImpl">
+		<constructor-arg>
+			<bean class="com.swissquote.foundation.soa.idempotency.rest.v1.resources.TestIdempotentOperationManager"/>
+		</constructor-arg>
+	</bean>
+
 </beans>

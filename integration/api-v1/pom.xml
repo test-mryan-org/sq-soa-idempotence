@@ -5,54 +5,44 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.swissquote.crm</groupId>
+		<groupId>com.swissquote.foundation.soa</groupId>
 		<artifactId>sq-soa-idempotence-integration</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<groupId>com.swissquote.foundation.soa</groupId>
 	<artifactId>sq-soa-idempotence-integration-api-v1</artifactId>
 	<name>${project.artifactId}</name>
+	<packaging>jar</packaging>
 
 	<properties>
 		<sq.artifact.type>api</sq.artifact.type>
 	</properties>
 
 	<dependencies>
-
-		<!-- This is for the @Path annotations -->
-		<!-- Scope is provided as client can use the JAX-RS 2 (javax.ws.rs:javax.ws.rs-api:2.0-rc2) -->
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>jsr311-api</artifactId>
-			<version>${jsr311-api.version}</version>
 			<scope>provided</scope>
 		</dependency>
-
-		<!-- This is for the @RolesAllowed annotations -->
-		<!-- Scope is provided as client the same annotations are also bundled
-			in javax.annotation:javax.annotation-api:1.2-* which comes with JAX-RS 2 -->
 		<dependency>
 			<groupId>javax.annotation</groupId>
 			<artifactId>jsr250-api</artifactId>
-			<version>${jsr250-api.version}</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>com.swissquote.foundation.soa</groupId>
 			<artifactId>sq-soa-support-api</artifactId>
-			<version>${sq-soa-platform.version}</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
-			<version>${validation-api.version}</version>
 			<scope>provided</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
-
 </project>

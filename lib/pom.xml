@@ -4,15 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<artifactId>sqc-parent-pom</artifactId>
-		<groupId>com.swissquote.crm</groupId>
-		<version>5.0.0</version>
-		<relativePath />
+		<artifactId>sq-soa-idempotence-parent</artifactId>
+		<groupId>com.swissquote.foundation.soa</groupId>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<groupId>com.swissquote.foundation.soa</groupId>
 	<artifactId>sq-soa-idempotence</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>SQ SOA Idempotence Library</name>
 

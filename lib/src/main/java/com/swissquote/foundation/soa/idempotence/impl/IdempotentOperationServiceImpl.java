@@ -8,7 +8,8 @@ import com.swissquote.foundation.soa.idempotence.IdempotentOperationManager;
 import com.swissquote.foundation.soa.idempotence.IdempotentOperationService;
 import com.swissquote.foundation.soa.idempotence.Result;
 import com.swissquote.foundation.soa.support.api.exceptions.BusinessCheckedException;
-import com.swissquote.foundation.soa.support.api.exceptions.ServiceException;
+import com.swissquote.foundation.soa.support.api.exceptions.BusinessUncheckedException;
+import com.swissquote.foundation.soa.support.api.exceptions.ClientException;
 
 /**
  * Implementation that fulfills the contract defined by IdempotentOperationService. It generates an identifier that is stored on the server and
@@ -38,6 +39,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	 * response for an "in progress operation" or the result of the encapsulated operation.
 	 * @param operation
 	 * @return
+	 * @throws BusinessCheckedException
 	 */
 	@Override
 	@SuppressWarnings("PMD.AvoidCatchingGenericException")
@@ -54,27 +56,28 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 
 		LOGGER.debug("Operation marked as 'in progress'. Starting job processing  ...");
 
-		T processingResponse;
+		T processingResponse = null;
 		try {
 			processingResponse = operation.process();
 		}
-		//Get BusinessCheckedException and throw it as it is
 		catch (BusinessCheckedException exception) {
-			processException(operation, exception);
 			LOGGER.warn("Got a BusinessCheckedException", exception);
+			processException(operation, exception);
 			throw exception;
 		}
-		//Get RuntimeException that is not BusinessCheckedException, so throw it as ServiceException
-		catch (RuntimeException exception) {
+		catch (BusinessUncheckedException exception) {
+			LOGGER.warn("Got a BusinessUncheckedException", exception);
 			processException(operation, exception);
-			LOGGER.warn("Got a RuntimeException", exception);
-			throw new ServiceException(exception);
+			throw exception;
 		}
-		//Get a technical exception, throw a ServiceException
-		catch (Exception exception) {
+		catch (ClientException exception) {
+			LOGGER.warn("Got a ClientException", exception);
 			processException(operation, exception);
-			LOGGER.warn("Got an Exception", exception);
-			throw new ServiceException(exception);
+			throw exception;
+		}
+		catch (Throwable t) {
+			processUnrecoverableException(operation);
+			throw t;
 		}
 		return processSuccess(operation, processingResponse);
 	}
@@ -85,7 +88,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 		Result result = operationManager.markAsFailed(operation, exception);
 
 		if (result.failed()) {
-			LOGGER.error("Unable to save the exception ...", exception);
+			LOGGER.warn("Unable to save the exception ...", exception);
 		}
 	}
 
@@ -104,6 +107,16 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 		return processingResponse;
 	}
 
+	private <T> void processUnrecoverableException(final IdempotentOperation<T> operation) {
+		LOGGER.debug("Unable to finish correctly due to an unrecoverable exception. Marking the operation as error for later retry ...");
+
+		Result result = operationManager.markAsError(operation);
+
+		if (result.failed()) {
+			LOGGER.warn("Unable to mark the operation with error ...");
+		}
+	}
+
 	/**
 	 * @param operation
 	 * @param result
@@ -117,7 +130,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 			case IN_PROGRESS:
 				return handleInProgress(operation);
 			case ALREADY_FINISHED_WITH_EXCEPTION:
-				throw handleFinishedWithException(operation, result);
+				handleFinishedWithException(operation, result);
 			case ALREADY_FINISHED:
 				return handleAlreadyFinished(operation, result);
 			case UNKNOWN:
@@ -144,7 +157,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	private <T> T handleUnableToFinish(@SuppressWarnings("unused") final IdempotentOperation<T> operation,
 			@SuppressWarnings("unused") final Result result) {
 		String errorMessage = "Failed to update request data to FINISHED status. Concurrent update possible.";
-		LOGGER.error(errorMessage);
+		LOGGER.warn(errorMessage);
 		throw new IllegalStateException(errorMessage);
 	}
 
@@ -161,9 +174,9 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	 * @param result
 	 * @return
 	 */
-	protected <T> BusinessCheckedException handleFinishedWithException(final IdempotentOperation<T> operation, final Result result) {
+	protected <T> void handleFinishedWithException(final IdempotentOperation<T> operation, final Result result) {
 		LOGGER.debug("The operation has finished already. An exception was thrown during its execution. Returning saved exception ...");
-		return operationManager.getException(operation);
+		IdempotentOperationServiceImpl.<RuntimeException> throwUnchecked(operationManager.getException(operation));
 	}
 
 	/**
@@ -173,5 +186,14 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	protected <T> T handleAlreadyFinished(final IdempotentOperation<T> operation, final Result result) {
 		LOGGER.debug("The operation has finished already. Returning saved response ...");
 		return operationManager.getResult(operation);
+	}
+
+	/*
+	 * A dirty hack to allow us to throw exceptions of any type without bringing down the unsafe
+	 * thunder.
+	 */
+	@SuppressWarnings("unchecked")
+	private static <T extends Exception> void throwUnchecked(Throwable e) throws T {
+		throw (T) e;
 	}
 }

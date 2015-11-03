@@ -18,6 +18,7 @@
 			com.swissquote.foundation.soa.idempotency.rest.v1,
 			com.swissquote.foundation.soa.idempotency.rest.provider
 			com.swissquote.foundation.monitoring.metrics.jersey.server,
+			com.swissquote.foundation.soa.service.providers
 		</param-value>
 	</context-param>
 
@@ -32,7 +33,6 @@
 		<param-value>classpath:applicationContext.xml</param-value>
 	</context-param>
 	-->
-
 
 	<context-param>
 	    <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
