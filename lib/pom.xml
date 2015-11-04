@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>sq-soa-idempotence-parent</artifactId>
 		<groupId>com.swissquote.foundation.soa</groupId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>1.3.2-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>sq-soa-idempotence</artifactId>
