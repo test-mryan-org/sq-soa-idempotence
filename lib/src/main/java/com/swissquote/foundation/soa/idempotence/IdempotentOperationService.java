@@ -11,7 +11,7 @@ public interface IdempotentOperationService {
 	 * Method that generates an identifier on the server side and returns it to the client
 	 * @return
 	 */
-	Long generateRequestId();
+	Long createNewOperation();
 
 	/**
 	 * Method that processes in an idempotent manner the operation that is encapsulated in the parameter.

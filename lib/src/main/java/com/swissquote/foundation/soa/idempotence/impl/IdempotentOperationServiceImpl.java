@@ -30,7 +30,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	 * @return
 	 */
 	@Override
-	public Long generateRequestId() {
+	public Long createNewOperation() {
 		return operationManager.createNewOperation();
 	}
 

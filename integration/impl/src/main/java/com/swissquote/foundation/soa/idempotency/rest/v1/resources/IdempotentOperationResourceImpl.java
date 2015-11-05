@@ -31,7 +31,7 @@ public class IdempotentOperationResourceImpl implements IdempotentOperationResou
 	@RolesAllowed("ROLE_PING")
 	@Override
 	public Long createNewOperation() {
-		return idempotentOperationService.generateRequestId();
+		return idempotentOperationService.createNewOperation();
 	}
 
 	@Override
