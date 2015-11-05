@@ -43,7 +43,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	 */
 	@Override
 	@SuppressWarnings("PMD.AvoidCatchingGenericException")
-	public <T> T processIdempotentOperation(final IdempotentOperation<T> operation) throws BusinessCheckedException {
+	public <T> T process(final IdempotentOperation<T> operation) throws BusinessCheckedException {
 
 		LOGGER.debug("Marking the operation as 'in progress' ... ");
 

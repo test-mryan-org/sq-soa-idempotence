@@ -78,7 +78,7 @@ public class IdempotentOperationResourceImpl implements IdempotentOperationResou
 				return OperationResponse.class;
 			}
 		};
-		return idempotentOperationService.processIdempotentOperation(idempotentOperation);
+		return idempotentOperationService.process(idempotentOperation);
 	}
 
 	public OperationResponse process(final OperationRequest data) throws BusinessCheckedException {
@@ -109,7 +109,7 @@ public class IdempotentOperationResourceImpl implements IdempotentOperationResou
 				return OperationResponse.class;
 			}
 		};
-		return idempotentOperationService.processIdempotentOperation(operation);
+		return idempotentOperationService.process(operation);
 	}
 
 	public IdempotentOperationService getIdempotentOperationService() {

@@ -18,5 +18,5 @@ public interface IdempotentOperationService {
 	 * @param operation
 	 * @return
 	 */
-	<T> T processIdempotentOperation(IdempotentOperation<T> operation) throws BusinessCheckedException;
+	<T> T process(IdempotentOperation<T> operation) throws BusinessCheckedException;
 }
