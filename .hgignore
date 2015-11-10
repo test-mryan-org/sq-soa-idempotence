@@ -21,3 +21,11 @@ syntax: regexp
 ^integration/api-v1/\.settings$
 syntax: regexp
 ^lib/target$
+syntax: regexp
+^client/target$
+syntax: regexp
+^client/\.settings$
+syntax: regexp
+^server/\.settings$
+syntax: regexp
+^server/target$

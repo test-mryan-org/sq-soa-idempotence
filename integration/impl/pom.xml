@@ -41,7 +41,7 @@
 
 		<dependency>
 			<groupId>com.swissquote.foundation.soa</groupId>
-			<artifactId>sq-soa-idempotence</artifactId>
+			<artifactId>sq-soa-idempotence-server</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
