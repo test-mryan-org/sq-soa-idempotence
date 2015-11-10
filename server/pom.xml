@@ -11,7 +11,7 @@
 
 	<artifactId>sq-soa-idempotence-server</artifactId>
 	<packaging>jar</packaging>
-	<name>SQ SOA Idempotence Library</name>
+	<name>${project.artifactId}</name>
 
 	<scm>
 		<connection>scm:hg:https://dev-tools.info.swissquote.ch:444/hg/foundation/sq-soa-idempotence</connection>

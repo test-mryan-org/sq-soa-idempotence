@@ -1,4 +1,4 @@
-package com.swissquote.foundation.soa.idempotence;
+package com.swissquote.foundation.soa.idempotence.server;
 
 public interface IdempotentOperationManager {
 

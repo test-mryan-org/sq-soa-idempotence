@@ -9,8 +9,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.sun.jersey.api.core.InjectParam;
-import com.swissquote.foundation.soa.idempotence.IdempotentOperation;
-import com.swissquote.foundation.soa.idempotence.IdempotentOperationService;
+import com.swissquote.foundation.soa.idempotence.server.IdempotentOperation;
+import com.swissquote.foundation.soa.idempotence.server.IdempotentOperationService;
 import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.IdempotentOperationResource;
 import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.Module;
 import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.Operation;

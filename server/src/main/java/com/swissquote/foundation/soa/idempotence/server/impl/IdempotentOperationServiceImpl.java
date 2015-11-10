@@ -1,12 +1,12 @@
-package com.swissquote.foundation.soa.idempotence.impl;
+package com.swissquote.foundation.soa.idempotence.server.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.swissquote.foundation.soa.idempotence.IdempotentOperation;
-import com.swissquote.foundation.soa.idempotence.IdempotentOperationManager;
-import com.swissquote.foundation.soa.idempotence.IdempotentOperationService;
-import com.swissquote.foundation.soa.idempotence.Result;
+import com.swissquote.foundation.soa.idempotence.server.IdempotentOperation;
+import com.swissquote.foundation.soa.idempotence.server.IdempotentOperationManager;
+import com.swissquote.foundation.soa.idempotence.server.IdempotentOperationService;
+import com.swissquote.foundation.soa.idempotence.server.Result;
 import com.swissquote.foundation.soa.support.api.exceptions.BusinessCheckedException;
 import com.swissquote.foundation.soa.support.api.exceptions.BusinessUncheckedException;
 import com.swissquote.foundation.soa.support.api.exceptions.ClientException;

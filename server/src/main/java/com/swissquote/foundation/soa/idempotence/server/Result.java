@@ -1,4 +1,4 @@
-package com.swissquote.foundation.soa.idempotence;
+package com.swissquote.foundation.soa.idempotence.server;
 
 public class Result {
 	private final Status status;

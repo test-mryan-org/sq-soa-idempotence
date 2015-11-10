@@ -4,9 +4,9 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.google.common.collect.Maps;
-import com.swissquote.foundation.soa.idempotence.IdempotentOperation;
-import com.swissquote.foundation.soa.idempotence.IdempotentOperationManager;
-import com.swissquote.foundation.soa.idempotence.Result;
+import com.swissquote.foundation.soa.idempotence.server.IdempotentOperation;
+import com.swissquote.foundation.soa.idempotence.server.IdempotentOperationManager;
+import com.swissquote.foundation.soa.idempotence.server.Result;
 
 public class TestIdempotentOperationManager implements IdempotentOperationManager {
 	private ConcurrentMap<Long, Operation> map = Maps.newConcurrentMap();
