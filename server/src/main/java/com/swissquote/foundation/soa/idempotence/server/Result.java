@@ -1,46 +1,44 @@
 package com.swissquote.foundation.soa.idempotence.server;
 
 public class Result {
-	private final Status status;
+	private final boolean success;
+	private final Reason reason;
 
-	public static enum Status {
-		SUCCESS(true), //
-		NO_OPERATION_FOUND(false), //
-		IN_PROGRESS(false), //
-		ALREADY_FINISHED_WITH_EXCEPTION(false), //
-		ALREADY_FINISHED(false), //
-		UNEXPECTED_STATUS(false), //
-		UNKNOWN(false);
-
-		private boolean success;
-
-		Status(final boolean success) {
-			this.success = success;
-		}
-
-		public boolean getSuccess() {
-			return success;
-		}
-
-		public boolean failed() {
-			return !success;
-		}
+	public static enum Reason {
+		NO_OPERATION_FOUND, //
+		IN_PROGRESS, //
+		ALREADY_FINISHED_WITH_EXCEPTION, //
+		ALREADY_FINISHED, //
+		UNEXPECTED_STATUS, //
+		UNKNOWN;
 	}
 
-	private Result(final Status status) {
-		super();
-		this.status = status;
+	public boolean succeeded() {
+		return success;
 	}
 
 	public boolean failed() {
-		return status.failed();
+		return !success;
 	}
 
-	public Status getReason() {
-		return status;
+	public Reason getReason() {
+		return reason;
 	}
 
-	public static Result forStatus(final Status status) {
-		return new Result(status);
+	public Result(final boolean success) {
+		this(true, null);
+	}
+
+	public Result(final boolean success, Reason reason) {
+		this.success = success;
+		this.reason = reason;
+	}
+
+	public static Result success() {
+		return new Result(true);
+	}
+
+	public static Result fail(final Reason reason) {
+		return new Result(false, reason);
 	}
 }

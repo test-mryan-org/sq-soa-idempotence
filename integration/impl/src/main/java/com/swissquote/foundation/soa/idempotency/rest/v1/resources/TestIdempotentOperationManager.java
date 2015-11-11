@@ -1,5 +1,11 @@
 package com.swissquote.foundation.soa.idempotency.rest.v1.resources;
 
+import static com.swissquote.foundation.soa.idempotence.server.Result.Reason.ALREADY_FINISHED;
+import static com.swissquote.foundation.soa.idempotence.server.Result.Reason.ALREADY_FINISHED_WITH_EXCEPTION;
+import static com.swissquote.foundation.soa.idempotence.server.Result.Reason.IN_PROGRESS;
+import static com.swissquote.foundation.soa.idempotence.server.Result.Reason.NO_OPERATION_FOUND;
+import static com.swissquote.foundation.soa.idempotence.server.Result.Reason.UNEXPECTED_STATUS;
+
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -22,43 +28,43 @@ public class TestIdempotentOperationManager implements IdempotentOperationManage
 	public <T> Result markAsInProgress(final IdempotentOperation<T> idempotentOperation) {
 		Operation operation = map.get(idempotentOperation.getRequestId());
 		if (operation == null) {
-			return Result.forStatus(Result.Status.NO_OPERATION_FOUND);
+			return Result.fail(NO_OPERATION_FOUND);
 		}
 
 		if (Operation.Status.NEW.equals(operation.getStatus()) || Operation.Status.ERROR.equals(operation.getStatus())) {
 			operation.setStatus(Operation.Status.IN_PROGRESS);
-			return Result.forStatus(Result.Status.SUCCESS);
+			return Result.success();
 		}
 
 		if (Operation.Status.IN_PROGRESS.equals(operation.getStatus())) {
-			return Result.forStatus(Result.Status.IN_PROGRESS);
+			return Result.fail(IN_PROGRESS);
 		}
 
 		if (Operation.Status.FINISHED_WITH_SUCCESS.equals(operation.getStatus())) {
-			return Result.forStatus(Result.Status.ALREADY_FINISHED);
+			return Result.fail(ALREADY_FINISHED);
 		}
 
 		if (Operation.Status.FINISHED_WITH_EXCEPTION.equals(operation.getStatus())) {
-			return Result.forStatus(Result.Status.ALREADY_FINISHED_WITH_EXCEPTION);
+			return Result.fail(ALREADY_FINISHED_WITH_EXCEPTION);
 		}
 
-		return Result.forStatus(Result.Status.UNEXPECTED_STATUS);
+		return Result.fail(UNEXPECTED_STATUS);
 	}
 
 	@Override
 	public <T> Result markAsFinished(final IdempotentOperation<T> idempotentOperation, T result) {
 		Operation operation = map.get(idempotentOperation.getRequestId());
 		if (operation == null) {
-			return Result.forStatus(Result.Status.NO_OPERATION_FOUND);
+			return Result.fail(NO_OPERATION_FOUND);
 		}
 
 		if (Operation.Status.IN_PROGRESS.equals(operation.getStatus())) {
 			operation.setStatus(Operation.Status.FINISHED_WITH_SUCCESS);
 			operation.setResult(result);
-			return Result.forStatus(Result.Status.SUCCESS);
+			return Result.success();
 		}
 
-		return Result.forStatus(Result.Status.UNEXPECTED_STATUS);
+		return Result.fail(UNEXPECTED_STATUS);
 
 	}
 
@@ -66,31 +72,31 @@ public class TestIdempotentOperationManager implements IdempotentOperationManage
 	public <T> Result markAsFailed(IdempotentOperation<T> idempotentOperation, Exception t) {
 		Operation operation = map.get(idempotentOperation.getRequestId());
 		if (operation == null) {
-			return Result.forStatus(Result.Status.NO_OPERATION_FOUND);
+			return Result.fail(NO_OPERATION_FOUND);
 		}
 
 		if (Operation.Status.IN_PROGRESS.equals(operation.getStatus())) {
 			operation.setStatus(Operation.Status.FINISHED_WITH_EXCEPTION);
 			operation.setException(t);
-			return Result.forStatus(Result.Status.SUCCESS);
+			return Result.success();
 		}
 
-		return Result.forStatus(Result.Status.UNEXPECTED_STATUS);
+		return Result.fail(UNEXPECTED_STATUS);
 	}
 
 	@Override
 	public <T> Result markAsError(IdempotentOperation<T> idempotentOperation) {
 		Operation operation = map.get(idempotentOperation.getRequestId());
 		if (operation == null) {
-			return Result.forStatus(Result.Status.NO_OPERATION_FOUND);
+			return Result.fail(NO_OPERATION_FOUND);
 		}
 
 		if (Operation.Status.IN_PROGRESS.equals(operation.getStatus())) {
 			operation.setStatus(Operation.Status.ERROR);
-			return Result.forStatus(Result.Status.SUCCESS);
+			return Result.success();
 		}
 
-		return Result.forStatus(Result.Status.UNEXPECTED_STATUS);
+		return Result.fail(UNEXPECTED_STATUS);
 	}
 
 	@Override

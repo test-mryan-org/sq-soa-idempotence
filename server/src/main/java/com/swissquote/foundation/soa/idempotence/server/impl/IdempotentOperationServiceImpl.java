@@ -131,12 +131,15 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 				return handleInProgress(operation);
 			case ALREADY_FINISHED_WITH_EXCEPTION:
 				handleFinishedWithException(operation, result);
+				break;
 			case ALREADY_FINISHED:
 				return handleAlreadyFinished(operation, result);
 			case UNKNOWN:
 			default:
 				throw new IllegalArgumentException("Unknown reason!");
 		}
+		// well, this is a side effect of the dirty hack from handleFinishedWithException
+		return null;
 	}
 
 	/**
