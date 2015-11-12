@@ -1,6 +1,22 @@
 package com.swissquote.foundation.soa.idempotence.client;
 
 public abstract class IdempotentOperation<T, E extends Throwable> {
+	private int retries;
+	private int sleepMilis;
+
+	public IdempotentOperation() {
+		this(5, 2000);
+	}
+
+	public IdempotentOperation(final int retries, final int sleeepMilis) {
+		if (retries > 0) {
+			this.retries = retries;
+		}
+		if (sleepMilis > 0) {
+			this.sleepMilis = sleeepMilis;
+		}
+	}
+
 	public T execute() throws E {
 		Long operationId = createNew();
 
@@ -19,15 +35,26 @@ public abstract class IdempotentOperation<T, E extends Throwable> {
 
 	public abstract Long createNew();
 
-	public abstract T attemptExecution(Long operationId) throws E;
+	public abstract T attemptExecution(final Long operationId) throws E;
 
-	public abstract boolean isComplete(T result);
+	public abstract boolean isComplete(final T result);
 
-	public abstract boolean canRetry();
-
-	public abstract void sleep();
+	public boolean canRetry() {
+		return retries > 0;
+	}
 
 	public abstract T handleNotCompletedResult(T result);
 
-	public abstract void retried();
+	public void sleep() {
+		try {
+			Thread.sleep(sleepMilis);
+		}
+		catch (InterruptedException e) {
+			// do nothing if interrupted
+		}
+	}
+
+	public void retried() {
+		retries--;
+	}
 }
