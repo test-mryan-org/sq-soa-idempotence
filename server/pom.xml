@@ -35,13 +35,14 @@
 			<groupId>com.swissquote.foundation.soa</groupId>
 			<artifactId>sq-soa-support-platform</artifactId>
 		</dependency>
+	
+
+		<!--test -->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
+			<scope>test</scope>
 		</dependency>
-		
-
-		<!--test -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -93,14 +94,6 @@
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.1.0</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
 	</dependencies>
 </project>
