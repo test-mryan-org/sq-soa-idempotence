@@ -2,8 +2,8 @@ package com.swissquote.foundation.soa.idempotence.client;
 
 /**
  * Use this wrapper on the client side if you are implementing an idempotent operation and you have to protect your code from responses that
- * could be incomplete (the client receives an answer from the server, but that is not the business one it isexpecting but one sent by the server
- * side layer that deals with operations that have already been started but have not yet finished ).
+ * could be incomplete (the client receives an answer from the server, but that is not the business one it is expecting but one sent by the
+ * server side layer that deals with operations that have already been started but have not yet finished ).
  * @author Andrei Niculescu (andrei.niculescu@swissquote.ch)
  * @param <T> The type of your response
  * @param <E> The exception that could be thrown by the soa code (usually a BusinessCheckedException)
