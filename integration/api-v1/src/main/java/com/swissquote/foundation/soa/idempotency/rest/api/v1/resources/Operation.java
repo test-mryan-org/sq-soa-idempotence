@@ -6,6 +6,7 @@ public class Operation {
 	private boolean throwBusinessUncheckedExcetion = false;
 	private boolean throwClientException = false;
 	private boolean throwGenericThrowable = false;
+	private boolean addExecutionIndex = true;
 
 	public boolean isThrowBusinessCheckedExcetion() {
 		return throwBusinessCheckedExcetion;
@@ -49,6 +50,15 @@ public class Operation {
 
 	public Operation setThrowGenericThrowable(boolean throwGenericThrowable) {
 		this.throwGenericThrowable = throwGenericThrowable;
+		return this;
+	}
+
+	public boolean isAddExecutionIndex() {
+		return addExecutionIndex;
+	}
+
+	public Operation setAddExecutionIndex(boolean addExecutionIndex) {
+		this.addExecutionIndex = addExecutionIndex;
 		return this;
 	}
 }

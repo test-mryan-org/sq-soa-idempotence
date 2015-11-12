@@ -60,7 +60,7 @@ public class IdempotentOperationResourceImpl implements IdempotentOperationResou
 
 			@Override
 			public Object getRequestPayload() {
-				return null;
+				return operation;
 			}
 
 			@Override

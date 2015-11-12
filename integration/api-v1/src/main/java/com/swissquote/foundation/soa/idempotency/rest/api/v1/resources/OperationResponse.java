@@ -8,4 +8,5 @@ import lombok.Data;
 @SuppressWarnings("PMD.UnusedPrivateField")
 public class OperationResponse {
 	private boolean inProgress;
+	private long executionIndex;
 }

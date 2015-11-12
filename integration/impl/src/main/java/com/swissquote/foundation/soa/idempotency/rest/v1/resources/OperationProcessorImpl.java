@@ -1,5 +1,7 @@
 package com.swissquote.foundation.soa.idempotency.rest.v1.resources;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.Operation;
 import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.OperationResponse;
 import com.swissquote.foundation.soa.support.api.exceptions.BusinessCheckedException;
@@ -7,7 +9,11 @@ import com.swissquote.foundation.soa.support.api.exceptions.BusinessUncheckedExc
 import com.swissquote.foundation.soa.support.api.exceptions.ClientException;
 
 public class OperationProcessorImpl implements OperationProcessor {
+	public static final String VARIABLE_NAME = "executinoIndex=";
+
 	private static final OperationProcessorImpl INSTANCE = new OperationProcessorImpl();
+
+	private AtomicLong executionsIndex = new AtomicLong(0);
 
 	private OperationProcessorImpl() {
 		// private matters
@@ -20,22 +26,30 @@ public class OperationProcessorImpl implements OperationProcessor {
 	@Override
 	public OperationResponse process(final Operation operation) throws BusinessCheckedException {
 		if (operation.isThrowBusinessCheckedExcetion()) {
-			throw new BusinessCheckedException("This is a BusinessCheckedException exception...");
+			throw new BusinessCheckedException(getExceptionMessage(operation, "BusinessCheckedException"));
 		}
 
 		if (operation.isThrowBusinessUncheckedExcetion()) {
-			throw new BusinessUncheckedException("This is a BusinessUncheckedException...");
+			throw new BusinessUncheckedException(getExceptionMessage(operation, "BusinessUncheckedException"));
 		}
 
 		if (operation.isThrowClientException()) {
-			throw new ClientException("This is a ClientException...");
+			throw new ClientException(getExceptionMessage(operation, "ClientException"));
 		}
 
 		if (operation.isThrowGenericThrowable()) {
-			OperationProcessorImpl.<RuntimeException> throwUnchecked(new Throwable("Throable exception"));
+			OperationProcessorImpl.<RuntimeException> throwUnchecked(new Throwable(getExceptionMessage(operation, "Throable")));
 		}
 
-		return null;
+		return OperationResponse.builder().inProgress(false).executionIndex(getExecutionIndex()).build();
+	}
+
+	private String getExceptionMessage(final Operation operation, final String message) {
+		return String.format("[%s%d] %s", VARIABLE_NAME, operation.isAddExecutionIndex() ? getExecutionIndex() : 0, message);
+	}
+
+	private long getExecutionIndex() {
+		return executionsIndex.incrementAndGet();
 	}
 
 	/*

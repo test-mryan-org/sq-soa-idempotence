@@ -13,6 +13,11 @@ import com.google.common.base.Strings;
 import com.netflix.hystrix.exception.HystrixRuntimeException;
 import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.IdempotentOperationResource;
 import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.Operation;
+import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.OperationResponse;
+import com.swissquote.foundation.soa.idempotency.rest.v1.resources.OperationProcessorImpl;
+import com.swissquote.foundation.soa.support.api.exceptions.BusinessCheckedException;
+import com.swissquote.foundation.soa.support.api.exceptions.BusinessUncheckedException;
+import com.swissquote.foundation.soa.support.api.exceptions.ClientException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/test-applicationContext.xml"})
@@ -35,24 +40,23 @@ public class ITIdempotentOperationResourceImpl {
 	public void throwingABusinessCheckedException() {
 		// a simple operation that throws an exception
 		Operation operation1 =
-				new Operation().setThrowBusinessCheckedExcetion(true).setDescription("BusinessCheckedException with a simple call");
+				new Operation().setThrowBusinessCheckedExcetion(true).setAddExecutionIndex(false)
+				.setDescription("BusinessCheckedException with a simple call");
 		Throwable t1 = getExeptionFromSimpleCall(operation1);
 		Assert.assertNotNull(t1);
-		log("BusinessCheckedException exception from a simple call", t1);
 
 		// The same operation (that throws an exception) executed in an idempotent way
 		Long operationId = resource.createNewOperation();
 		Operation operation2 = new Operation()
 				.setThrowBusinessCheckedExcetion(true)
+				.setAddExecutionIndex(false)
 				.setDescription("BusinessCheckedException with an idempotent call");
 		Throwable t2 = getExeptionFromIdempotentCall(operationId, operation2);
 		Assert.assertNotNull(t2);
 		assertEquals(t2, t1);
-		log("BusinessCheckedException exception from an idempotent call", t2);
 
 		// Re-executing the same operation a second time
 		Throwable t3 = getExeptionFromIdempotentCall(operationId, operation2);
-		log("BusinessCheckedException exception from a repeated idempotent call", t3);
 		Assert.assertNotNull(t3);
 		assertEquals(t3, t1);
 	}
@@ -62,24 +66,23 @@ public class ITIdempotentOperationResourceImpl {
 		// a simple operation that throws an exception
 		Operation operation1 = new Operation()
 		.setThrowBusinessUncheckedExcetion(true)
+		.setAddExecutionIndex(false)
 		.setDescription("BusinessUncheckedException with a simple call");
 		Throwable t1 = getExeptionFromSimpleCall(operation1);
-		log("BusinessUncheckedException exception from a simple call", t1);
 		Assert.assertNotNull(t1);
 
 		// The same operation (that throws an exception) executed in an idempotent way
 		Long operationId = resource.createNewOperation();
 		Operation operation2 = new Operation()
 		.setThrowBusinessUncheckedExcetion(true)
+		.setAddExecutionIndex(false)
 		.setDescription("BusinessUncheckedException with an idempotent call");
 		Throwable t2 = getExeptionFromIdempotentCall(operationId, operation2);
-		log("BusinessUncheckedException exception from an idempotent call", t2);
 		Assert.assertNotNull(t2);
 		assertEquals(t2, t1);
 
 		// Re-executing the same operation a second time
 		Throwable t3 = getExeptionFromIdempotentCall(operationId, operation2);
-		log("BusinessUncheckedException exception from a repeated idempotent call", t3);
 		Assert.assertNotNull(t3);
 		assertEquals(t3, t1);
 	}
@@ -89,24 +92,23 @@ public class ITIdempotentOperationResourceImpl {
 		// a simple operation that throws an exception
 		Operation operation1 = new Operation()
 		.setThrowClientException(true)
+		.setAddExecutionIndex(false)
 		.setDescription("ClientException with a simple call");
 		Throwable t1 = getExeptionFromSimpleCall(operation1);
-		log("ClientException exception from a simple call", t1);
 		Assert.assertNotNull(t1);
 
 		// The same operation (that throws an exception) executed in an idempotent way
 		Long operationId = resource.createNewOperation();
 		Operation operation2 = new Operation()
 		.setThrowClientException(true)
+		.setAddExecutionIndex(false)
 		.setDescription("ClientException with an idempotent call");
 		Throwable t2 = getExeptionFromIdempotentCall(operationId, operation2);
-		log("ClientException exception from an idempotent call", t2);
 		Assert.assertNotNull(t2);
 		assertEquals(t2, t1);
 
 		// Re-executing the same operation a second time
 		Throwable t3 = getExeptionFromIdempotentCall(operationId, operation2);
-		log("ClientException exception from a repeated idempotent call", t3);
 		Assert.assertNotNull(t3);
 		assertEquals(t3, t1);
 	}
@@ -116,26 +118,93 @@ public class ITIdempotentOperationResourceImpl {
 		// a simple operation that throws an exception
 		Operation operation1 = new Operation()
 		.setThrowGenericThrowable(true)
+		.setAddExecutionIndex(false)
 		.setDescription("GenericThrowable with a simple call");
 		Throwable t1 = getExeptionFromSimpleCall(operation1);
-		log("GenericThrowable exception from a simple call", t1);
 		Assert.assertNotNull(t1);
 
 		// The same operation (that throws an exception) executed in an idempotent way
 		Long operationId = resource.createNewOperation();
 		Operation operation2 = new Operation()
 				.setThrowGenericThrowable(true)
+				.setAddExecutionIndex(false)
 		.setDescription("GenericThrowable with an idempotent call");
 		Throwable t2 = getExeptionFromIdempotentCall(operationId, operation2);
-		log("GenericThrowable exception from an idempotent call", t2);
 		Assert.assertNotNull(t2);
 		assertEquals(t2, t1);
 
 		// Re-executing the same operation a second time
 		Throwable t3 = getExeptionFromIdempotentCall(operationId, operation2);
-		log("GenericThrowable exception from a repeated idempotent call", t3);
 		Assert.assertNotNull(t3);
 		assertEquals(t3, t1);
+	}
+
+	@Test
+	public void sameRequestIsExecutedOnlyOnce() throws BusinessCheckedException {
+		Long operationId = resource.createNewOperation();
+		Operation operation = new Operation().setAddExecutionIndex(true);
+		OperationResponse result1 = resource.processIdempotentOperation(operationId, operation);
+		OperationResponse result2 = resource.processIdempotentOperation(operationId, operation);
+		Assert.assertEquals(result1, result2);
+		Assert.assertTrue(result1.getExecutionIndex() > 0);
+	}
+
+	@Test
+	public void sameRequestIsExecutedTwiceIfTheIdIsNotTheSame() throws BusinessCheckedException {
+		Long operationId1 = resource.createNewOperation();
+		Operation operation = new Operation().setAddExecutionIndex(true);
+		OperationResponse result1 = resource.processIdempotentOperation(operationId1, operation);
+		Long operationId2 = resource.createNewOperation();
+		OperationResponse result2 = resource.processIdempotentOperation(operationId2, operation);
+		Assert.assertNotEquals(result1, result2);
+		Assert.assertNotEquals(result1.getExecutionIndex(), result2.getExecutionIndex());
+	}
+
+	@Test
+	public void onlyOneBusinessCheckedExeptionForTheSameRequestId() {
+		Long operationId = resource.createNewOperation();
+		Operation operation = new Operation().setAddExecutionIndex(true).setThrowBusinessCheckedExcetion(true);
+		Throwable t1 = getExeptionFromIdempotentCall(operationId, operation);
+		Throwable t2 = getExeptionFromIdempotentCall(operationId, operation);
+		assertEquals(t1, t2);
+		Assert.assertEquals(BusinessCheckedException.class, t1.getClass());
+		assertTheExecutionIndexIsValid(t1);
+	}
+
+	@Test
+	public void onlyOneBusinessUncheckedExeptionForTheSameRequestId() {
+		Long operationId = resource.createNewOperation();
+		Operation operation = new Operation().setAddExecutionIndex(true).setThrowBusinessUncheckedExcetion(true);
+		Throwable t1 = getExeptionFromIdempotentCall(operationId, operation);
+		Throwable t2 = getExeptionFromIdempotentCall(operationId, operation);
+		assertEquals(t1, t2);
+		Assert.assertEquals(BusinessUncheckedException.class, t1.getClass());
+		assertTheExecutionIndexIsValid(t1);
+	}
+
+	@Test
+	public void onlyOneClientExeptionForTheSameRequestId() {
+		Long operationId = resource.createNewOperation();
+		Operation operation = new Operation().setAddExecutionIndex(true).setThrowClientException(true);
+		Throwable t1 = getExeptionFromIdempotentCall(operationId, operation);
+		Throwable t2 = getExeptionFromIdempotentCall(operationId, operation);
+		assertEquals(t1, t2);
+		Assert.assertEquals(ClientException.class, t1.getClass());
+		assertTheExecutionIndexIsValid(t1);
+	}
+
+	private void assertTheExecutionIndexIsValid(final Throwable t1) {
+		String message = t1.getMessage();
+
+		int start = message.indexOf(OperationProcessorImpl.VARIABLE_NAME) + OperationProcessorImpl.VARIABLE_NAME.length();
+
+		message = message.substring(start);
+
+		int end = message.indexOf("]");
+		message = message.substring(0, end);
+		int index = Integer.parseInt(message);
+		Assert.assertTrue(index > 0);
+
 	}
 
 	private void assertEquals(Throwable t1, Throwable t2) {
@@ -146,14 +215,6 @@ public class ITIdempotentOperationResourceImpl {
 			return;
 		}
 		Assert.assertEquals(t1.getMessage(), t2.getMessage());
-	}
-
-	private void log(String message, Throwable t) {
-		/*
-		LOGGER.info(SEPARATOR);
-		LOGGER.info(message, t);
-		LOGGER.info(SEPARATOR);
-		 */
 	}
 
 	private Throwable getExeptionFromSimpleCall(Operation operation) {
