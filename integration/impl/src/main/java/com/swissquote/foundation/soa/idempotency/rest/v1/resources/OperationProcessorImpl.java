@@ -9,7 +9,7 @@ import com.swissquote.foundation.soa.support.api.exceptions.BusinessUncheckedExc
 import com.swissquote.foundation.soa.support.api.exceptions.ClientException;
 
 public class OperationProcessorImpl implements OperationProcessor {
-	public static final String VARIABLE_NAME = "executinoIndex=";
+	public static final String VARIABLE_NAME = "executionIndex=";
 
 	private static final OperationProcessorImpl INSTANCE = new OperationProcessorImpl();
 
@@ -38,7 +38,7 @@ public class OperationProcessorImpl implements OperationProcessor {
 		}
 
 		if (operation.isThrowGenericThrowable()) {
-			OperationProcessorImpl.<RuntimeException> throwUnchecked(new Throwable(getExceptionMessage(operation, "Throable")));
+			OperationProcessorImpl.<RuntimeException> throwUnchecked(new Throwable(getExceptionMessage(operation, "Throwable")));
 		}
 
 		return OperationResponse.builder().inProgress(false).executionIndex(getExecutionIndex()).build();

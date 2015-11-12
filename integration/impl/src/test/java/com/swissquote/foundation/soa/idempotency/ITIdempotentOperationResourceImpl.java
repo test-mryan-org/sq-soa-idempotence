@@ -143,8 +143,10 @@ public class ITIdempotentOperationResourceImpl {
 	public void sameRequestIsExecutedOnlyOnce() throws BusinessCheckedException {
 		Long operationId = resource.createNewOperation();
 		Operation operation = new Operation().setAddExecutionIndex(true);
+
 		OperationResponse result1 = resource.processIdempotentOperation(operationId, operation);
 		OperationResponse result2 = resource.processIdempotentOperation(operationId, operation);
+
 		Assert.assertEquals(result1, result2);
 		Assert.assertTrue(result1.getExecutionIndex() > 0);
 	}
@@ -153,8 +155,10 @@ public class ITIdempotentOperationResourceImpl {
 	public void sameRequestIsExecutedTwiceIfTheIdIsNotTheSame() throws BusinessCheckedException {
 		Long operationId1 = resource.createNewOperation();
 		Operation operation = new Operation().setAddExecutionIndex(true);
+
 		OperationResponse result1 = resource.processIdempotentOperation(operationId1, operation);
 		Long operationId2 = resource.createNewOperation();
+
 		OperationResponse result2 = resource.processIdempotentOperation(operationId2, operation);
 		Assert.assertNotEquals(result1, result2);
 		Assert.assertNotEquals(result1.getExecutionIndex(), result2.getExecutionIndex());
@@ -166,6 +170,7 @@ public class ITIdempotentOperationResourceImpl {
 		Operation operation = new Operation().setAddExecutionIndex(true).setThrowBusinessCheckedExcetion(true);
 		Throwable t1 = getExeptionFromIdempotentCall(operationId, operation);
 		Throwable t2 = getExeptionFromIdempotentCall(operationId, operation);
+
 		assertEquals(t1, t2);
 		Assert.assertEquals(BusinessCheckedException.class, t1.getClass());
 		assertTheExecutionIndexIsValid(t1);
@@ -175,8 +180,10 @@ public class ITIdempotentOperationResourceImpl {
 	public void onlyOneBusinessUncheckedExeptionForTheSameRequestId() {
 		Long operationId = resource.createNewOperation();
 		Operation operation = new Operation().setAddExecutionIndex(true).setThrowBusinessUncheckedExcetion(true);
+
 		Throwable t1 = getExeptionFromIdempotentCall(operationId, operation);
 		Throwable t2 = getExeptionFromIdempotentCall(operationId, operation);
+
 		assertEquals(t1, t2);
 		Assert.assertEquals(BusinessUncheckedException.class, t1.getClass());
 		assertTheExecutionIndexIsValid(t1);
@@ -186,24 +193,25 @@ public class ITIdempotentOperationResourceImpl {
 	public void onlyOneClientExeptionForTheSameRequestId() {
 		Long operationId = resource.createNewOperation();
 		Operation operation = new Operation().setAddExecutionIndex(true).setThrowClientException(true);
+
 		Throwable t1 = getExeptionFromIdempotentCall(operationId, operation);
 		Throwable t2 = getExeptionFromIdempotentCall(operationId, operation);
+
 		assertEquals(t1, t2);
 		Assert.assertEquals(ClientException.class, t1.getClass());
 		assertTheExecutionIndexIsValid(t1);
 	}
 
 	private void assertTheExecutionIndexIsValid(final Throwable t1) {
-		String message = t1.getMessage();
+		String string = t1.getMessage();
 
-		int start = message.indexOf(OperationProcessorImpl.VARIABLE_NAME) + OperationProcessorImpl.VARIABLE_NAME.length();
+		int index = string.indexOf(OperationProcessorImpl.VARIABLE_NAME) + OperationProcessorImpl.VARIABLE_NAME.length();
+		string = string.substring(index);
+		index = string.indexOf("]");
+		string = string.substring(0, index);
 
-		message = message.substring(start);
-
-		int end = message.indexOf("]");
-		message = message.substring(0, end);
-		int index = Integer.parseInt(message);
-		Assert.assertTrue(index > 0);
+		int executionIndex = Integer.parseInt(string);
+		Assert.assertTrue(executionIndex > 0);
 
 	}
 
