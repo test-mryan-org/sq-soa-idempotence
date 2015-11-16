@@ -6,16 +6,16 @@ import static com.swissquote.foundation.soa.idempotence.server.Result.Reason.IN_
 import static com.swissquote.foundation.soa.idempotence.server.Result.Reason.NO_OPERATION_FOUND;
 import static com.swissquote.foundation.soa.idempotence.server.Result.Reason.UNEXPECTED_STATUS;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.google.common.collect.Maps;
 import com.swissquote.foundation.soa.idempotence.server.IdempotentOperation;
 import com.swissquote.foundation.soa.idempotence.server.IdempotentOperationManager;
 import com.swissquote.foundation.soa.idempotence.server.Result;
 
 public class TestIdempotentOperationManager implements IdempotentOperationManager {
-	private ConcurrentMap<Long, Operation> map = Maps.newConcurrentMap();
+	private ConcurrentMap<Long, Operation> map = new ConcurrentHashMap<Long, TestIdempotentOperationManager.Operation>();
 
 	@Override
 	public Long createNewOperation() {
