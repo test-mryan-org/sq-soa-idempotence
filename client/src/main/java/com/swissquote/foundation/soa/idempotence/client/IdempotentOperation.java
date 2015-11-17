@@ -53,7 +53,7 @@ public abstract class IdempotentOperation<T, E extends Throwable> {
 		return retries > 0;
 	}
 
-	public abstract T handleNeverCompleted(T result);
+	public abstract T handleNeverCompleted(T result) throws E;
 
 	public void sleep() {
 		try {
