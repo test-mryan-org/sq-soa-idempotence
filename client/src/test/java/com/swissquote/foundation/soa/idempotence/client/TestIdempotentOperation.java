@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class TestIdempotentOperation {
+	private static final int SLEEP_MILIS = 1;
 	private final AtomicLong operationIdGenerator = new AtomicLong(0);
 
 	@Test(expected = IllegalArgumentException.class)
@@ -28,27 +29,7 @@ public class TestIdempotentOperation {
 	}
 
 	private IdempotentOperation<OperationResult, OperationException> createIdempotentOperation(final int retries, final int sleepMilis) {
-		return new IdempotentOperation<OperationResult, OperationException>(retries, sleepMilis) {
-			@Override
-			public Long createNew() {
-				return null;
-			}
-
-			@Override
-			public OperationResult attemptExecution(Long operationId) throws OperationException {
-				return null;
-			}
-
-			@Override
-			public boolean isComplete(OperationResult result) {
-				return false;
-			}
-
-			@Override
-			public OperationResult handleNeverCompleted(OperationResult result) throws OperationException {
-				return null;
-			}
-		};
+		return createIdempotentOperation(retries, sleepMilis, 10);
 	}
 
 	private IdempotentOperation<OperationResult, OperationException> createIdempotentOperation(final int retries, final int sleepMilis,
@@ -84,11 +65,10 @@ public class TestIdempotentOperation {
 		final Set<Long> operationIds = new HashSet<Long>();
 		final OperationResultFactory factory = Factories.createCompletingIn(8);
 
-		OperationResult result = new IdempotentOperation<OperationResult, OperationException>(10, 1) {
-
+		new IdempotentOperation<OperationResult, OperationException>(10, 1) {
 			@Override
 			public Long createNew() {
-				return operationIdGenerator.incrementAndGet();
+				return Long.valueOf(operationIdGenerator.incrementAndGet());
 			}
 
 			@Override
@@ -107,19 +87,19 @@ public class TestIdempotentOperation {
 				throw new OperationException();
 			}
 		}.execute();
+
 		Assert.assertEquals(1, operationIds.size());
 	}
 
 	@Test(expected = OperationException.class)
 	public void operationNeverCompletes() throws OperationException {
-		OperationResult result = createIdempotentOperation(10, 1, Integer.MAX_VALUE).execute();
+		OperationResult result = createIdempotentOperation(10, SLEEP_MILIS, Integer.MAX_VALUE).execute();
 	}
 
 	@Test
 	public void operationCompetesCorrectly() throws OperationException {
-		OperationResult result = createIdempotentOperation(9, 1, 10).execute();
+		OperationResult result = createIdempotentOperation(9, SLEEP_MILIS, 10).execute();
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result.isComplete());
 	}
-
 }
