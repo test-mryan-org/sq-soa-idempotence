@@ -30,18 +30,13 @@
 		<dependency>
 			<groupId>com.swissquote.foundation.soa</groupId>
 			<artifactId>sq-soa-support-api</artifactId>
-			<!-- 
 			<scope>provided</scope>
-			 -->
 		</dependency>
 		<dependency>
-			<groupId>com.swissquote.foundation.soa</groupId>
-			<artifactId>sq-soa-support-platform</artifactId>
-			<!-- 
+		    <groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
 			<scope>provided</scope>
-			 -->
 		</dependency>
-	
 
 		<!--test -->
 		<dependency>
