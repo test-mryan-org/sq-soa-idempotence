@@ -30,10 +30,12 @@
 		<dependency>
 			<groupId>com.swissquote.foundation.soa</groupId>
 			<artifactId>sq-soa-support-api</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.swissquote.foundation.soa</groupId>
 			<artifactId>sq-soa-support-platform</artifactId>
+			<scope>provided</scope>
 		</dependency>
 	
 
