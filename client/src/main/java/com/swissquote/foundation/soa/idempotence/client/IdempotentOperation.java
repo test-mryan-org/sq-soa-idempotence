@@ -9,20 +9,20 @@ package com.swissquote.foundation.soa.idempotence.client;
  * @param <E> The exception that could be thrown by the soa code (usually a BusinessCheckedException)
  */
 public abstract class IdempotentOperation<T, E extends Throwable> {
-	private static final int NUBER_OF_RETRIES = 9;
+	private static final int NUBER_OF_CALLS = 10;
 	private static final int SLEEP_MILIS_BEFORE_RETRYING = 4000;
-	private int retries;
+	private int noOfCalls;
 	private int sleepMilis;
 
 	public IdempotentOperation() {
-		this(NUBER_OF_RETRIES, SLEEP_MILIS_BEFORE_RETRYING);
+		this(NUBER_OF_CALLS, SLEEP_MILIS_BEFORE_RETRYING);
 	}
 
-	public IdempotentOperation(final int retries, final int sleepMilis) {
-		if (retries < 0) {
-			throw new IllegalArgumentException("'retries' cannot be negative");
+	public IdempotentOperation(final int noOfCalls, final int sleepMilis) {
+		if (noOfCalls < 0) {
+			throw new IllegalArgumentException("'noOfCalls' cannot be negative");
 		}
-		this.retries = retries;
+		this.noOfCalls = noOfCalls;
 
 		if (sleepMilis < 0) {
 			throw new IllegalArgumentException("'sleepMilis' cannot be negative");
@@ -34,10 +34,11 @@ public abstract class IdempotentOperation<T, E extends Throwable> {
 		Long operationId = createNew();
 
 		T result = attemptExecution(operationId);
+		callPerformed();
 		while (!isComplete(result) && canRetry()) {
 			sleep();
 			result = attemptExecution(operationId);
-			retried();
+			callPerformed();
 		}
 
 		if (isComplete(result)) {
@@ -53,7 +54,7 @@ public abstract class IdempotentOperation<T, E extends Throwable> {
 	public abstract boolean isComplete(final T result);
 
 	public synchronized boolean canRetry() {
-		return retries > 0;
+		return noOfCalls > 0;
 	}
 
 	public abstract T handleNeverCompleted(T result) throws E;
@@ -67,12 +68,12 @@ public abstract class IdempotentOperation<T, E extends Throwable> {
 		}
 	}
 
-	public synchronized void retried() {
-		retries--;
+	public synchronized void callPerformed() {
+		noOfCalls--;
 	}
 
-	public int getRetries() {
-		return retries;
+	public int getNoOfCalls() {
+		return noOfCalls;
 	}
 
 	public int getSleepMilis() {

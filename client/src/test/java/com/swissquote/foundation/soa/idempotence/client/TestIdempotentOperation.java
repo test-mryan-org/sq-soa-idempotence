@@ -24,19 +24,19 @@ public class TestIdempotentOperation {
 	@Test
 	public void objectCorrectlyBuilt() {
 		IdempotentOperation<OperationResult, OperationException> opertion = createIdempotentOperation(10, 1000);
-		Assert.assertEquals(10, opertion.getRetries());
+		Assert.assertEquals(10, opertion.getNoOfCalls());
 		Assert.assertEquals(1000, opertion.getSleepMilis());
 	}
 
-	private IdempotentOperation<OperationResult, OperationException> createIdempotentOperation(final int retries, final int sleepMilis) {
-		return createIdempotentOperation(retries, sleepMilis, 10);
+	private IdempotentOperation<OperationResult, OperationException> createIdempotentOperation(final int noOfCalls, final int sleepMilis) {
+		return createIdempotentOperation(noOfCalls, sleepMilis, 10);
 	}
 
-	private IdempotentOperation<OperationResult, OperationException> createIdempotentOperation(final int retries, final int sleepMilis,
+	private IdempotentOperation<OperationResult, OperationException> createIdempotentOperation(final int noOfCalls, final int sleepMilis,
 			final int completeAfter) {
 		final OperationResultFactory factory = Factories.createCompletingIn(completeAfter);
 
-		return new IdempotentOperation<OperationResult, OperationException>(retries, sleepMilis) {
+		return new IdempotentOperation<OperationResult, OperationException>(noOfCalls, sleepMilis) {
 			@Override
 			public Long createNew() {
 				return operationIdGenerator.incrementAndGet();
@@ -98,7 +98,7 @@ public class TestIdempotentOperation {
 
 	@Test
 	public void operationCompetesCorrectly() throws OperationException {
-		OperationResult result = createIdempotentOperation(9, SLEEP_MILIS, 10).execute();
+		OperationResult result = createIdempotentOperation(10, SLEEP_MILIS, 10).execute();
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result.isComplete());
 	}
