@@ -17,4 +17,12 @@
 	<properties>
 		<sq.artifact.type>library</sq.artifact.type>
 	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>		
+	</dependencies>
 </project>

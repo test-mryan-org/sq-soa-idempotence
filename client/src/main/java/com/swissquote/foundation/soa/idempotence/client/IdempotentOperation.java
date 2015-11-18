@@ -9,7 +9,7 @@ package com.swissquote.foundation.soa.idempotence.client;
  * @param <E> The exception that could be thrown by the soa code (usually a BusinessCheckedException)
  */
 public abstract class IdempotentOperation<T, E extends Throwable> {
-	private static final int NUBER_OF_RETRIES = 10;
+	private static final int NUBER_OF_RETRIES = 9;
 	private static final int SLEEP_MILIS_BEFORE_RETRYING = 4000;
 	private int retries;
 	private int sleepMilis;
@@ -18,16 +18,19 @@ public abstract class IdempotentOperation<T, E extends Throwable> {
 		this(NUBER_OF_RETRIES, SLEEP_MILIS_BEFORE_RETRYING);
 	}
 
-	public IdempotentOperation(final int retries, final int sleeepMilis) {
-		if (retries > 0) {
-			this.retries = retries;
+	public IdempotentOperation(final int retries, final int sleepMilis) {
+		if (retries < 0) {
+			throw new IllegalArgumentException("'retries' cannot be negative");
 		}
-		if (sleepMilis > 0) {
-			this.sleepMilis = sleeepMilis;
+		this.retries = retries;
+
+		if (sleepMilis < 0) {
+			throw new IllegalArgumentException("'sleepMilis' cannot be negative");
 		}
+		this.sleepMilis = sleepMilis;
 	}
 
-	public T execute() throws E {
+	public synchronized T execute() throws E {
 		Long operationId = createNew();
 
 		T result = attemptExecution(operationId);
@@ -49,7 +52,7 @@ public abstract class IdempotentOperation<T, E extends Throwable> {
 
 	public abstract boolean isComplete(final T result);
 
-	public boolean canRetry() {
+	public synchronized boolean canRetry() {
 		return retries > 0;
 	}
 
@@ -64,7 +67,16 @@ public abstract class IdempotentOperation<T, E extends Throwable> {
 		}
 	}
 
-	public void retried() {
+	public synchronized void retried() {
 		retries--;
 	}
+
+	public int getRetries() {
+		return retries;
+	}
+
+	public int getSleepMilis() {
+		return sleepMilis;
+	}
+
 }
