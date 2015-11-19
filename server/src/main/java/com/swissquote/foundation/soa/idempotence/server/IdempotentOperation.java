@@ -6,7 +6,7 @@ public interface IdempotentOperation<T> {
 
 	Class<?> getResponseClass();
 
-	Long getRequestId();
+	Long getId();
 
 	Object getRequestPayload();
 

@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.swissquote.foundation.soa.idempotence.server.IdempotentOperation;
 import com.swissquote.foundation.soa.idempotence.server.IdempotentOperationManager;
 import com.swissquote.foundation.soa.idempotence.server.Result;
 
@@ -25,8 +24,8 @@ public class TestIdempotentOperationManager implements IdempotentOperationManage
 	}
 
 	@Override
-	public <T> Result markAsInProgress(final IdempotentOperation<T> idempotentOperation, final String requestAsJson) {
-		Operation operation = map.get(idempotentOperation.getRequestId());
+	public Result markAsInProgress(final Long operationId, final String requestAsJson) {
+		Operation operation = map.get(operationId);
 		if (operation == null) {
 			return Result.fail(NO_OPERATION_FOUND);
 		}
@@ -52,8 +51,8 @@ public class TestIdempotentOperationManager implements IdempotentOperationManage
 	}
 
 	@Override
-	public <T> Result markAsFinished(final IdempotentOperation<T> idempotentOperation, final String resultAsJson) {
-		Operation operation = map.get(idempotentOperation.getRequestId());
+	public Result markAsFinished(final Long operationId, final String resultAsJson) {
+		Operation operation = map.get(operationId);
 		if (operation == null) {
 			return Result.fail(NO_OPERATION_FOUND);
 		}
@@ -69,8 +68,8 @@ public class TestIdempotentOperationManager implements IdempotentOperationManage
 	}
 
 	@Override
-	public <T> Result markAsFailed(IdempotentOperation<T> idempotentOperation, final String exceptionAsJson) {
-		Operation operation = map.get(idempotentOperation.getRequestId());
+	public Result markAsFailed(final Long operationId, final String exceptionAsJson) {
+		Operation operation = map.get(operationId);
 		if (operation == null) {
 			return Result.fail(NO_OPERATION_FOUND);
 		}
@@ -85,8 +84,8 @@ public class TestIdempotentOperationManager implements IdempotentOperationManage
 	}
 
 	@Override
-	public <T> Result markAsError(IdempotentOperation<T> idempotentOperation) {
-		Operation operation = map.get(idempotentOperation.getRequestId());
+	public Result markAsError(final Long operationId) {
+		Operation operation = map.get(operationId);
 		if (operation == null) {
 			return Result.fail(NO_OPERATION_FOUND);
 		}
@@ -100,10 +99,10 @@ public class TestIdempotentOperationManager implements IdempotentOperationManage
 	}
 
 	@Override
-	public <T> String getJsonContent(IdempotentOperation<T> idempotentOperation) {
-		Operation operation = map.get(idempotentOperation.getRequestId());
+	public String getJsonContent(final Long operationId) {
+		Operation operation = map.get(operationId);
 		if (operation == null) {
-			throw new IllegalStateException("No operation found for requestId() " + idempotentOperation.getRequestId());
+			throw new IllegalStateException("No operation found for requestId() " + operationId);
 		}
 		return operation.getContent();
 	}

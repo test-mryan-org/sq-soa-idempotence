@@ -54,7 +54,7 @@ public class IdempotentOperationResourceImpl implements IdempotentOperationResou
 			throws BusinessCheckedException {
 		IdempotentOperation<OperationResponse> idempotentOperation = new IdempotentOperation<OperationResponse>() {
 			@Override
-			public Long getRequestId() {
+			public Long getId() {
 				return operationId;
 			}
 
@@ -85,7 +85,7 @@ public class IdempotentOperationResourceImpl implements IdempotentOperationResou
 
 		IdempotentOperation<OperationResponse> operation = new IdempotentOperation<OperationResponse>() {
 			@Override
-			public Long getRequestId() {
+			public Long getId() {
 				return data.getRequestId();
 			}
 

@@ -3,13 +3,13 @@ package com.swissquote.foundation.soa.idempotence.server;
 public interface IdempotentOperationManager {
 	Long createNewOperation();
 
-	<T> Result markAsInProgress(IdempotentOperation<T> operation, String requestAsJson);
+	Result markAsInProgress(Long operationId, String requestAsJson);
 
-	<T> Result markAsFinished(IdempotentOperation<T> operation, String resultAsJson);
+	Result markAsFinished(Long operationId, String resultAsJson);
 
-	<T> Result markAsFailed(IdempotentOperation<T> operation, String exceptionAsJson);
+	Result markAsFailed(Long operationId, String exceptionAsJson);
 
-	<T> Result markAsError(IdempotentOperation<T> operation);
+	Result markAsError(Long operationId);
 
-	<T> String getJsonContent(IdempotentOperation<T> operation);
+	String getJsonContent(Long operationId);
 }

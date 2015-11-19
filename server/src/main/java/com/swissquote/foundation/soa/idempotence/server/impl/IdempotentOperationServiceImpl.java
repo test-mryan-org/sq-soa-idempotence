@@ -53,7 +53,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 
 		LOGGER.debug("Marking the operation as 'in progress' ... ");
 
-		Result result = operationManager.markAsInProgress(operation, jsonUtils.toJson(operation.getRequestPayload()));
+		Result result = operationManager.markAsInProgress(operation.getId(), jsonUtils.toJson(operation.getRequestPayload()));
 		if (result.failed()) {
 			LOGGER.debug("Unable to mark the operation as 'in progress'!");
 
@@ -91,7 +91,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	private <T> void processException(final IdempotentOperation<T> operation, Exception exception) {
 		LOGGER.debug("Unable to finish correctly due to an exception. Saving the exception ...");
 
-		Result result = operationManager.markAsFailed(operation, jsonUtils.exceptionToJson(exception));
+		Result result = operationManager.markAsFailed(operation.getId(), jsonUtils.exceptionToJson(exception));
 
 		if (result.failed()) {
 			LOGGER.warn("Unable to save the exception ...", exception);
@@ -103,7 +103,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 
 		String jsonResponse = jsonUtils.toJson(processingResponse);
 
-		Result result = operationManager.markAsFinished(operation, jsonResponse);
+		Result result = operationManager.markAsFinished(operation.getId(), jsonResponse);
 
 		if (result.failed()) {
 			LOGGER.debug("Unable to save the result ...");
@@ -118,7 +118,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	private <T> void processUnrecoverableException(final IdempotentOperation<T> operation) {
 		LOGGER.debug("Unable to finish correctly due to an unrecoverable exception. Marking the operation as error for later retry ...");
 
-		Result result = operationManager.markAsError(operation);
+		Result result = operationManager.markAsError(operation.getId());
 
 		if (result.failed()) {
 			LOGGER.warn("Unable to mark the operation with error ...");
@@ -155,7 +155,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	 * @return
 	 */
 	private <T> T handleNoOperationFound(final IdempotentOperation<T> operation) throws BusinessCheckedException {
-		String message = "No operation found for the provided id :" + operation.getRequestId();
+		String message = "No operation found for the provided id :" + operation.getId();
 		LOGGER.warn(message);
 		throw new BusinessCheckedException(message);
 	}
@@ -188,7 +188,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	protected <T> void handleFinishedWithException(final IdempotentOperation<T> operation, final Result result) {
 		LOGGER.debug("The operation has finished already. An exception was thrown during its execution. Returning saved exception ...");
 
-		String json = operationManager.getJsonContent(operation);
+		String json = operationManager.getJsonContent(operation.getId());
 
 		IdempotentOperationServiceImpl.<RuntimeException> throwUnchecked(jsonUtils.exceptionFromJson(json));
 	}
@@ -200,7 +200,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	protected <T> T handleAlreadyFinished(final IdempotentOperation<T> operation, final Result result) {
 		LOGGER.debug("The operation has finished already. Returning saved response ...");
 
-		String json = operationManager.getJsonContent(operation);
+		String json = operationManager.getJsonContent(operation.getId());
 
 		return (T) jsonUtils.fromJson(json, operation.getResponseClass());
 	}
