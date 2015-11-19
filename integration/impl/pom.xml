@@ -44,6 +44,13 @@
 			<artifactId>sq-soa-idempotence-server</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.swissquote.foundation.soa</groupId>
+			<artifactId>sq-soa-idempotence-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
 
 		<dependency>
 			<groupId>org.slf4j</groupId>

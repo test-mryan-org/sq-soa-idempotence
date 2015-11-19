@@ -7,6 +7,7 @@ public class Operation {
 	private boolean throwClientException = false;
 	private boolean throwGenericThrowable = false;
 	private boolean addExecutionIndex = true;
+	private Long sleepMilis = null;
 
 	public boolean isThrowBusinessCheckedExcetion() {
 		return throwBusinessCheckedExcetion;
@@ -59,6 +60,15 @@ public class Operation {
 
 	public Operation setAddExecutionIndex(boolean addExecutionIndex) {
 		this.addExecutionIndex = addExecutionIndex;
+		return this;
+	}
+
+	public Long getSleepMilis() {
+		return sleepMilis;
+	}
+
+	public Operation setSleepMilis(Long sleepMilis) {
+		this.sleepMilis = sleepMilis;
 		return this;
 	}
 }

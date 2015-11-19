@@ -41,7 +41,20 @@ public class OperationProcessorImpl implements OperationProcessor {
 			OperationProcessorImpl.<RuntimeException> throwUnchecked(new Throwable(getExceptionMessage(operation, "Throwable")));
 		}
 
+		if (operation.getSleepMilis() != null) {
+			sleep(operation.getSleepMilis());
+		}
+
 		return OperationResponse.builder().inProgress(false).executionIndex(getExecutionIndex()).build();
+	}
+
+	private void sleep(Long sleepMilis) {
+		try {
+			Thread.sleep(sleepMilis);
+		}
+		catch (InterruptedException e) {
+			//
+		}
 	}
 
 	private String getExceptionMessage(final Operation operation, final String message) {

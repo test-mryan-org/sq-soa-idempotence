@@ -20,9 +20,15 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	private static final Logger LOGGER = LoggerFactory.getLogger(IdempotentOperationServiceImpl.class);
 
 	private final IdempotentOperationManager operationManager;
+	private final JsonUtils jsonUtils;
 
 	public IdempotentOperationServiceImpl(final IdempotentOperationManager operationManager) {
+		this(operationManager, new JsonUtils());
+	}
+
+	public IdempotentOperationServiceImpl(final IdempotentOperationManager operationManager, final JsonUtils jsonUtils) {
 		this.operationManager = operationManager;
+		this.jsonUtils = jsonUtils;
 	}
 
 	/**
@@ -47,7 +53,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 
 		LOGGER.debug("Marking the operation as 'in progress' ... ");
 
-		Result result = operationManager.markAsInProgress(operation);
+		Result result = operationManager.markAsInProgress(operation, jsonUtils.toJson(operation.getRequestPayload()));
 		if (result.failed()) {
 			LOGGER.debug("Unable to mark the operation as 'in progress'!");
 
@@ -85,7 +91,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	private <T> void processException(final IdempotentOperation<T> operation, Exception exception) {
 		LOGGER.debug("Unable to finish correctly due to an exception. Saving the exception ...");
 
-		Result result = operationManager.markAsFailed(operation, exception);
+		Result result = operationManager.markAsFailed(operation, jsonUtils.exceptionToJson(exception));
 
 		if (result.failed()) {
 			LOGGER.warn("Unable to save the exception ...", exception);
@@ -95,7 +101,9 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	private <T> T processSuccess(final IdempotentOperation<T> operation, T processingResponse) {
 		LOGGER.debug("Job processing finished correctly. Saving the response  ...");
 
-		Result result = operationManager.markAsFinished(operation, processingResponse);
+		String jsonResponse = jsonUtils.toJson(processingResponse);
+
+		Result result = operationManager.markAsFinished(operation, jsonResponse);
 
 		if (result.failed()) {
 			LOGGER.debug("Unable to save the result ...");
@@ -179,7 +187,10 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	 */
 	protected <T> void handleFinishedWithException(final IdempotentOperation<T> operation, final Result result) {
 		LOGGER.debug("The operation has finished already. An exception was thrown during its execution. Returning saved exception ...");
-		IdempotentOperationServiceImpl.<RuntimeException> throwUnchecked(operationManager.getException(operation));
+
+		String json = operationManager.getJsonContent(operation);
+
+		IdempotentOperationServiceImpl.<RuntimeException> throwUnchecked(jsonUtils.exceptionFromJson(json));
 	}
 
 	/**
@@ -188,7 +199,10 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	 */
 	protected <T> T handleAlreadyFinished(final IdempotentOperation<T> operation, final Result result) {
 		LOGGER.debug("The operation has finished already. Returning saved response ...");
-		return operationManager.getResult(operation);
+
+		String json = operationManager.getJsonContent(operation);
+
+		return (T) jsonUtils.fromJson(json, operation.getResponseClass());
 	}
 
 	/*
@@ -199,4 +213,5 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	private static <T extends Exception> void throwUnchecked(Throwable e) throws T {
 		throw (T) e;
 	}
+
 }
