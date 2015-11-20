@@ -2,7 +2,7 @@ package com.swissquote.foundation.soa.idempotence.server;
 
 import com.swissquote.foundation.soa.support.api.exceptions.BusinessCheckedException;
 
-public interface IdempotentOperation<T> {
+public interface IdempotentOperation<T, E extends BusinessCheckedException> {
 
 	Class<?> getResponseClass();
 
@@ -12,5 +12,5 @@ public interface IdempotentOperation<T> {
 
 	T getInProgressResponse();
 
-	T process() throws BusinessCheckedException;
+	T process() throws E;
 }

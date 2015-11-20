@@ -49,7 +49,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	 */
 	@Override
 	@SuppressWarnings("PMD.AvoidCatchingGenericException")
-	public <T> T process(final IdempotentOperation<T> operation) throws BusinessCheckedException {
+	public <T, E extends BusinessCheckedException> T process(final IdempotentOperation<T, E> operation) throws E {
 
 		LOGGER.debug("Marking the operation as 'in progress' ... ");
 
@@ -88,7 +88,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 		return processSuccess(operation, processingResponse);
 	}
 
-	private <T> void processException(final IdempotentOperation<T> operation, Exception exception) {
+	private <T, E extends BusinessCheckedException> void processException(final IdempotentOperation<T, E> operation, Exception exception) {
 		LOGGER.debug("Unable to finish correctly due to an exception. Saving the exception ...");
 
 		Result result = operationManager.markAsFailed(operation.getId(), jsonUtils.exceptionToJson(exception));
@@ -98,7 +98,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 		}
 	}
 
-	private <T> T processSuccess(final IdempotentOperation<T> operation, T processingResponse) {
+	private <T, E extends BusinessCheckedException> T processSuccess(final IdempotentOperation<T, E> operation, T processingResponse) {
 		LOGGER.debug("Job processing finished correctly. Saving the response  ...");
 
 		String jsonResponse = jsonUtils.toJson(processingResponse);
@@ -115,7 +115,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 		return processingResponse;
 	}
 
-	private <T> void processUnrecoverableException(final IdempotentOperation<T> operation) {
+	private <T, E extends BusinessCheckedException> void processUnrecoverableException(final IdempotentOperation<T, E> operation) {
 		LOGGER.debug("Unable to finish correctly due to an unrecoverable exception. Marking the operation as error for later retry ...");
 
 		Result result = operationManager.markAsError(operation.getId());
@@ -130,8 +130,8 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	 * @param result
 	 * @return
 	 */
-	private <T> T handleUnableToStart(final IdempotentOperation<T> operation, final Result result)
-			throws BusinessCheckedException {
+	private <T, E extends BusinessCheckedException> T handleUnableToStart(final IdempotentOperation<T, E> operation, final Result result)
+			throws E {
 		switch (result.getReason()) {
 			case NO_OPERATION_FOUND:
 				return handleNoOperationFound(operation);
@@ -154,10 +154,10 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	 * @param operation
 	 * @return
 	 */
-	private <T> T handleNoOperationFound(final IdempotentOperation<T> operation) throws BusinessCheckedException {
+	private <T, E extends BusinessCheckedException> T handleNoOperationFound(final IdempotentOperation<T, E> operation) {
 		String message = "No operation found for the provided id :" + operation.getId();
 		LOGGER.warn(message);
-		throw new BusinessCheckedException(message);
+		throw new IllegalStateException(message);
 	}
 
 	/**
@@ -165,7 +165,8 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	 * @param result
 	 * @return
 	 */
-	private <T> T handleUnableToFinish(@SuppressWarnings("unused") final IdempotentOperation<T> operation,
+	private <T, E extends BusinessCheckedException> T handleUnableToFinish(
+			@SuppressWarnings("unused") final IdempotentOperation<T, E> operation,
 			@SuppressWarnings("unused") final Result result) {
 		String errorMessage = "Failed to update request data to FINISHED status. Concurrent update possible.";
 		LOGGER.warn(errorMessage);
@@ -176,7 +177,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	 * @param operation
 	 * @return
 	 */
-	protected <T> T handleInProgress(final IdempotentOperation<T> operation) {
+	protected <T, E extends BusinessCheckedException> T handleInProgress(final IdempotentOperation<T, E> operation) {
 		LOGGER.debug("The operation is in progress. Returning the predefined response ...");
 		return operation.getInProgressResponse();
 	}
@@ -185,7 +186,8 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	 * @param result
 	 * @return
 	 */
-	protected <T> void handleFinishedWithException(final IdempotentOperation<T> operation, final Result result) {
+	protected <T, E extends BusinessCheckedException> void handleFinishedWithException(final IdempotentOperation<T, E> operation,
+			final Result result) {
 		LOGGER.debug("The operation has finished already. An exception was thrown during its execution. Returning saved exception ...");
 
 		String json = operationManager.getJsonContent(operation.getId());
@@ -197,7 +199,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	 * @param result
 	 * @return
 	 */
-	protected <T> T handleAlreadyFinished(final IdempotentOperation<T> operation, final Result result) {
+	protected <T, E extends BusinessCheckedException> T handleAlreadyFinished(final IdempotentOperation<T, E> operation, final Result result) {
 		LOGGER.debug("The operation has finished already. Returning saved response ...");
 
 		String json = operationManager.getJsonContent(operation.getId());

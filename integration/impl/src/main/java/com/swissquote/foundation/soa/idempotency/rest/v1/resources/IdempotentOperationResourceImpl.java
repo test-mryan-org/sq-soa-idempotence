@@ -52,63 +52,65 @@ public class IdempotentOperationResourceImpl implements IdempotentOperationResou
 	@RolesAllowed("ROLE_PING")
 	public OperationResponse processIdempotentOperation(@PathParam("operationId") final Long operationId, final Operation operation)
 			throws BusinessCheckedException {
-		IdempotentOperation<OperationResponse> idempotentOperation = new IdempotentOperation<OperationResponse>() {
-			@Override
-			public Long getId() {
-				return operationId;
-			}
+		IdempotentOperation<OperationResponse, BusinessCheckedException> idempotentOperation =
+				new IdempotentOperation<OperationResponse, BusinessCheckedException>() {
+					@Override
+					public Long getId() {
+						return operationId;
+					}
 
-			@Override
-			public Object getRequestPayload() {
-				return operation;
-			}
+					@Override
+					public Object getRequestPayload() {
+						return operation;
+					}
 
-			@Override
-			public OperationResponse getInProgressResponse() {
-				return OperationResponse.builder().inProgress(true).build();
-			}
+					@Override
+					public OperationResponse getInProgressResponse() {
+						return OperationResponse.builder().inProgress(true).build();
+					}
 
-			@Override
-			public OperationResponse process() throws BusinessCheckedException {
-				return OperationProcessorImpl.instance().process(operation);
-			}
+					@Override
+					public OperationResponse process() throws BusinessCheckedException {
+						return OperationProcessorImpl.instance().process(operation);
+					}
 
-			@Override
-			public Class<?> getResponseClass() {
-				return OperationResponse.class;
-			}
-		};
+					@Override
+					public Class<?> getResponseClass() {
+						return OperationResponse.class;
+					}
+				};
 		return idempotentOperationService.process(idempotentOperation);
 	}
 
 	public OperationResponse process(final OperationRequest data) throws BusinessCheckedException {
 
-		IdempotentOperation<OperationResponse> operation = new IdempotentOperation<OperationResponse>() {
-			@Override
-			public Long getId() {
-				return data.getRequestId();
-			}
+		IdempotentOperation<OperationResponse, BusinessCheckedException> operation =
+				new IdempotentOperation<OperationResponse, BusinessCheckedException>() {
+					@Override
+					public Long getId() {
+						return data.getRequestId();
+					}
 
-			@Override
-			public Object getRequestPayload() {
-				return data;
-			}
+					@Override
+					public Object getRequestPayload() {
+						return data;
+					}
 
-			@Override
-			public OperationResponse getInProgressResponse() {
-				return OperationResponse.builder().inProgress(true).build();
-			}
+					@Override
+					public OperationResponse getInProgressResponse() {
+						return OperationResponse.builder().inProgress(true).build();
+					}
 
-			@Override
-			public OperationResponse process() throws BusinessCheckedException {
-				return OperationResponse.builder().inProgress(false).build();
-			}
+					@Override
+					public OperationResponse process() throws BusinessCheckedException {
+						return OperationResponse.builder().inProgress(false).build();
+					}
 
-			@Override
-			public Class<?> getResponseClass() {
-				return OperationResponse.class;
-			}
-		};
+					@Override
+					public Class<?> getResponseClass() {
+						return OperationResponse.class;
+					}
+				};
 		return idempotentOperationService.process(operation);
 	}
 
