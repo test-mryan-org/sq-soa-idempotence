@@ -1,5 +1,8 @@
 package com.swissquote.foundation.soa.idempotence.client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Use this wrapper on the client side if you are implementing an idempotent operation and you have to protect your code from responses that
  * could be incomplete (the client receives an answer from the server, but that is not the business one it is expecting but one sent by the
@@ -9,7 +12,9 @@ package com.swissquote.foundation.soa.idempotence.client;
  * @param <E> The exception that could be thrown by the soa code (usually a BusinessCheckedException)
  */
 public abstract class IdempotentOperation<T, E extends Throwable> {
-	private static final int NUBER_OF_CALLS = 10;
+	private static final Logger LOGGER = LoggerFactory.getLogger(IdempotentOperation.class);
+
+	private static final int NUBER_OF_CALLS = 20;
 	private static final int SLEEP_MILIS_BEFORE_RETRYING = 4000;
 	private int noOfCalls;
 	private int sleepMilis;
@@ -33,10 +38,15 @@ public abstract class IdempotentOperation<T, E extends Throwable> {
 	public synchronized T execute() throws E {
 		Long operationId = createNew();
 
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Using operationId = " + operationId);
+		}
+
 		T result = attemptExecution(operationId);
 		callPerformed();
 		while (!isComplete(result) && canRetry()) {
 			sleep();
+			LOGGER.info("Received 'inProgress' response for operationId = " + operationId + ". Retrying ...");
 			result = attemptExecution(operationId);
 			callPerformed();
 		}
@@ -44,6 +54,8 @@ public abstract class IdempotentOperation<T, E extends Throwable> {
 		if (isComplete(result)) {
 			return result;
 		}
+
+		LOGGER.warn("Operation [" + operationId + "] did not complete ... ");
 		return handleNeverCompleted(result);
 	}
 
