@@ -24,13 +24,13 @@ public abstract class IdempotentOperation<T, E extends Throwable> {
 	}
 
 	public IdempotentOperation(final int noOfCalls, final int sleepMilis) {
-		if (noOfCalls < 0) {
-			throw new IllegalArgumentException("'noOfCalls' cannot be negative");
+		if (noOfCalls <= 0) {
+			throw new IllegalArgumentException("'noOfCalls' has to be a positive and greater than 0");
 		}
 		this.noOfCalls = noOfCalls;
 
-		if (sleepMilis < 0) {
-			throw new IllegalArgumentException("'sleepMilis' cannot be negative");
+		if (sleepMilis <= 0) {
+			throw new IllegalArgumentException("'sleepMilis' has to be a positive and greater than 0");
 		}
 		this.sleepMilis = sleepMilis;
 	}
