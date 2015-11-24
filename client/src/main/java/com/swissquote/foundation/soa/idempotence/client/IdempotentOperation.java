@@ -38,9 +38,7 @@ public abstract class IdempotentOperation<T, E extends Throwable> {
 	public synchronized T execute() throws E {
 		Long operationId = createNew();
 
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Using operationId = " + operationId);
-		}
+		LOGGER.debug("Using operationId {} ", operationId);
 
 		T result = attemptExecution(operationId);
 		callPerformed();
