@@ -204,6 +204,8 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 
 		String json = operationManager.getJsonContent(operation.getId());
 
+		LOGGER.debug("Deserializing with class {} {}", operation.getResponseClass().getName(), json);
+
 		return (T) jsonUtils.fromJson(json, operation.getResponseClass());
 	}
 

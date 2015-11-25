@@ -34,4 +34,12 @@ public interface IdempotentOperationResource {
 	@RolesAllowed("ROLE_PING")
 	OperationResponse processIdempotentOperation(@PathParam("operationId") Long operationId, Operation operation)
 			throws BusinessCheckedException;
+
+	@POST
+	@Path("/operationWithGsonPolymorphic/idempotent/{operationId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed("ROLE_PING")
+	OperationResponseWithGsonPolymorphic processIdempotentOperation2(@PathParam("operationId") Long operationId, Operation operation)
+			throws BusinessCheckedException;
 }

@@ -14,9 +14,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.netflix.hystrix.exception.HystrixRuntimeException;
 import com.swissquote.foundation.soa.idempotence.client.IdempotentOperation;
 import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.IdempotentOperationResource;
+import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.InProgressOperationResponse;
 import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.Operation;
 import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.OperationResponse;
-import com.swissquote.foundation.soa.idempotency.rest.v1.resources.OperationProcessorImpl;
+import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.OperationResponseWithGsonPolymorphic;
+import com.swissquote.foundation.soa.idempotency.rest.v1.resources.OperationProcessorUtils;
 import com.swissquote.foundation.soa.support.api.exceptions.BusinessCheckedException;
 import com.swissquote.foundation.soa.support.api.exceptions.BusinessUncheckedException;
 import com.swissquote.foundation.soa.support.api.exceptions.ClientException;
@@ -42,16 +44,16 @@ public class ITIdempotentOperationResourceImpl {
 		// a simple operation that throws an exception
 		Operation operation1 =
 				new Operation().setThrowBusinessCheckedExcetion(true).setAddExecutionIndex(false)
-				.setDescription("BusinessCheckedException with a simple call");
+						.setDescription("BusinessCheckedException with a simple call");
 		Throwable t1 = getExeptionFromSimpleCall(operation1);
 		Assert.assertNotNull(t1);
 
 		// The same operation (that throws an exception) executed in an idempotent way
 		Long operationId = resource.createNewOperation();
 		Operation operation2 = new Operation()
-				.setThrowBusinessCheckedExcetion(true)
-				.setAddExecutionIndex(false)
-				.setDescription("BusinessCheckedException with an idempotent call");
+		.setThrowBusinessCheckedExcetion(true)
+		.setAddExecutionIndex(false)
+		.setDescription("BusinessCheckedException with an idempotent call");
 		Throwable t2 = getExeptionFromIdempotentCall(operationId, operation2);
 		Assert.assertNotNull(t2);
 		assertEquals(t2, t1);
@@ -66,18 +68,18 @@ public class ITIdempotentOperationResourceImpl {
 	public void throwingABusinessUncheckedException() {
 		// a simple operation that throws an exception
 		Operation operation1 = new Operation()
-		.setThrowBusinessUncheckedExcetion(true)
-		.setAddExecutionIndex(false)
-		.setDescription("BusinessUncheckedException with a simple call");
+				.setThrowBusinessUncheckedExcetion(true)
+				.setAddExecutionIndex(false)
+				.setDescription("BusinessUncheckedException with a simple call");
 		Throwable t1 = getExeptionFromSimpleCall(operation1);
 		Assert.assertNotNull(t1);
 
 		// The same operation (that throws an exception) executed in an idempotent way
 		Long operationId = resource.createNewOperation();
 		Operation operation2 = new Operation()
-		.setThrowBusinessUncheckedExcetion(true)
-		.setAddExecutionIndex(false)
-		.setDescription("BusinessUncheckedException with an idempotent call");
+				.setThrowBusinessUncheckedExcetion(true)
+				.setAddExecutionIndex(false)
+				.setDescription("BusinessUncheckedException with an idempotent call");
 		Throwable t2 = getExeptionFromIdempotentCall(operationId, operation2);
 		Assert.assertNotNull(t2);
 		assertEquals(t2, t1);
@@ -92,18 +94,18 @@ public class ITIdempotentOperationResourceImpl {
 	public void throwingAClientException() {
 		// a simple operation that throws an exception
 		Operation operation1 = new Operation()
-		.setThrowClientException(true)
-		.setAddExecutionIndex(false)
-		.setDescription("ClientException with a simple call");
+				.setThrowClientException(true)
+				.setAddExecutionIndex(false)
+				.setDescription("ClientException with a simple call");
 		Throwable t1 = getExeptionFromSimpleCall(operation1);
 		Assert.assertNotNull(t1);
 
 		// The same operation (that throws an exception) executed in an idempotent way
 		Long operationId = resource.createNewOperation();
 		Operation operation2 = new Operation()
-		.setThrowClientException(true)
-		.setAddExecutionIndex(false)
-		.setDescription("ClientException with an idempotent call");
+				.setThrowClientException(true)
+				.setAddExecutionIndex(false)
+				.setDescription("ClientException with an idempotent call");
 		Throwable t2 = getExeptionFromIdempotentCall(operationId, operation2);
 		Assert.assertNotNull(t2);
 		assertEquals(t2, t1);
@@ -118,18 +120,18 @@ public class ITIdempotentOperationResourceImpl {
 	public void throwingGenericThrowable() {
 		// a simple operation that throws an exception
 		Operation operation1 = new Operation()
-		.setThrowGenericThrowable(true)
-		.setAddExecutionIndex(false)
-		.setDescription("GenericThrowable with a simple call");
+				.setThrowGenericThrowable(true)
+				.setAddExecutionIndex(false)
+				.setDescription("GenericThrowable with a simple call");
 		Throwable t1 = getExeptionFromSimpleCall(operation1);
 		Assert.assertNotNull(t1);
 
 		// The same operation (that throws an exception) executed in an idempotent way
 		Long operationId = resource.createNewOperation();
 		Operation operation2 = new Operation()
-				.setThrowGenericThrowable(true)
-				.setAddExecutionIndex(false)
-		.setDescription("GenericThrowable with an idempotent call");
+		.setThrowGenericThrowable(true)
+		.setAddExecutionIndex(false)
+				.setDescription("GenericThrowable with an idempotent call");
 		Throwable t2 = getExeptionFromIdempotentCall(operationId, operation2);
 		Assert.assertNotNull(t2);
 		assertEquals(t2, t1);
@@ -211,7 +213,7 @@ public class ITIdempotentOperationResourceImpl {
 		 */
 		final Operation operation = new Operation().setAddExecutionIndex(true).setSleepMilis(3500L);
 		final AtomicBoolean hadIntermediaryResponse = new AtomicBoolean(false);
-		OperationResponse result = new IdempotentOperation<OperationResponse, BusinessCheckedException>() {
+		OperationResponse result = new IdempotentOperation<OperationResponse, BusinessCheckedException>(10, 100) {
 
 			@Override
 			public Long createNew() {
@@ -274,10 +276,85 @@ public class ITIdempotentOperationResourceImpl {
 		Assert.assertNotNull(result);
 	}
 
+	// @Test
+	public void operationFinishingAfterTheFirstSoaTimeOut_GsonPolymorphic() throws BusinessCheckedException {
+		/**
+		 * The operation is prepared to take 3500ms(a sleep) while the soa configuration is to perform a switch to a different machine after
+		 * sq.soa.client.MyService-V1.properties > read.timeout.millis=3000. This means that we will have the response from the second machine.
+		 */
+		final Operation operation = new Operation().setAddExecutionIndex(true).setSleepMilis(3500L);
+		final AtomicBoolean hadIntermediaryResponse = new AtomicBoolean(false);
+		OperationResponseWithGsonPolymorphic result =
+				new IdempotentOperation<OperationResponseWithGsonPolymorphic, BusinessCheckedException>(10, 100) {
+
+			@Override
+			public Long createNew() {
+				return resource.createNewOperation();
+			}
+
+			@Override
+			public OperationResponseWithGsonPolymorphic attemptExecution(Long operationId) throws BusinessCheckedException {
+				return resource.processIdempotentOperation2(operationId, operation);
+			}
+
+			@Override
+			public boolean isComplete(OperationResponseWithGsonPolymorphic result) {
+				hadIntermediaryResponse.set(true);
+				return !(result instanceof InProgressOperationResponse);
+			}
+
+			@Override
+			public OperationResponseWithGsonPolymorphic handleNeverCompleted(OperationResponseWithGsonPolymorphic result)
+					throws BusinessCheckedException {
+				throw new BusinessCheckedException("operation did not finish");
+			}
+		}.execute();
+
+		Assert.assertNotNull(result);
+		Assert.assertFalse(result instanceof InProgressOperationResponse);
+		Assert.assertTrue(hadIntermediaryResponse.get());
+	}
+
+	// @Test(expected = BusinessCheckedException.class)
+	public void operationFinishingAfterSoaTimeOut_GsonPolymorphic() throws BusinessCheckedException {
+		/**
+		 * The operation is prepared to take 20s(a sleep) while the soa configuration is to perform a switch to a different machine after
+		 * sq.soa.client.MyService-V1.properties > read.timeout.millis=3000. This means that from the first system we will get a timeout, the
+		 * sq-soa layer will switch to the second machine from it it will get a "inProgress" response. It will keep trying (9 more times with a
+		 * sleep of 1000ms before retrying) and in the end it will execute the code specified in handleNeverCompleted;
+		 */
+		final Operation operation = new Operation().setAddExecutionIndex(true).setSleepMilis(20000L);
+		OperationResponseWithGsonPolymorphic result =
+				new IdempotentOperation<OperationResponseWithGsonPolymorphic, BusinessCheckedException>(10, 1000) {
+
+					@Override
+					public Long createNew() {
+						return resource.createNewOperation();
+					}
+
+					@Override
+					public OperationResponseWithGsonPolymorphic attemptExecution(Long operationId) throws BusinessCheckedException {
+						return resource.processIdempotentOperation2(operationId, operation);
+					}
+
+					@Override
+					public boolean isComplete(OperationResponseWithGsonPolymorphic r) {
+						return !(r instanceof InProgressOperationResponse);
+					}
+
+					@Override
+					public OperationResponseWithGsonPolymorphic handleNeverCompleted(OperationResponseWithGsonPolymorphic r)
+					throws BusinessCheckedException {
+						throw new BusinessCheckedException("operation did not finish");
+					}
+				}.execute();
+		Assert.assertNotNull(result);
+	}
+
 	private void assertTheExecutionIndexIsValid(final Throwable t1) {
 		String string = t1.getMessage();
 
-		int index = string.indexOf(OperationProcessorImpl.VARIABLE_NAME) + OperationProcessorImpl.VARIABLE_NAME.length();
+		int index = string.indexOf(OperationProcessorUtils.VARIABLE_NAME) + OperationProcessorUtils.VARIABLE_NAME.length();
 		string = string.substring(index);
 		index = string.indexOf("]");
 		string = string.substring(0, index);

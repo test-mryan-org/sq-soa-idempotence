@@ -8,18 +8,23 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sun.jersey.api.core.InjectParam;
 import com.swissquote.foundation.soa.idempotence.server.IdempotentOperation;
 import com.swissquote.foundation.soa.idempotence.server.IdempotentOperationService;
 import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.IdempotentOperationResource;
+import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.InProgressOperationResponse;
 import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.Module;
 import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.Operation;
-import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.OperationRequest;
 import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.OperationResponse;
+import com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.OperationResponseWithGsonPolymorphic;
 import com.swissquote.foundation.soa.support.api.exceptions.BusinessCheckedException;
 
 @Path(Module.NAME + "/someService")
 public class IdempotentOperationResourceImpl implements IdempotentOperationResource {
+	private static final Logger LOGGER = LoggerFactory.getLogger(IdempotentOperationResourceImpl.class);
 
 	@InjectParam
 	private IdempotentOperationService idempotentOperationService;
@@ -41,7 +46,7 @@ public class IdempotentOperationResourceImpl implements IdempotentOperationResou
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed("ROLE_PING")
 	public OperationResponse processSimpleOperation(final Operation operation) throws BusinessCheckedException {
-		return OperationProcessorImpl.instance().process(operation);
+		return new OperationProcessorImpl().process(operation);
 	}
 
 	@Override
@@ -71,7 +76,7 @@ public class IdempotentOperationResourceImpl implements IdempotentOperationResou
 
 					@Override
 					public OperationResponse process() throws BusinessCheckedException {
-						return OperationProcessorImpl.instance().process(operation);
+						return new OperationProcessorImpl().process(operation);
 					}
 
 					@Override
@@ -82,36 +87,45 @@ public class IdempotentOperationResourceImpl implements IdempotentOperationResou
 		return idempotentOperationService.process(idempotentOperation);
 	}
 
-	public OperationResponse process(final OperationRequest data) throws BusinessCheckedException {
+	@Override
+	@POST
+	@Path("/operationWithGsonPolymorphic/idempotent/{operationId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed("ROLE_PING")
+	public OperationResponseWithGsonPolymorphic processIdempotentOperation2(final @PathParam("operationId") Long operationId,
+			final Operation operation)
+					throws BusinessCheckedException {
 
-		IdempotentOperation<OperationResponse, BusinessCheckedException> operation =
-				new IdempotentOperation<OperationResponse, BusinessCheckedException>() {
+		LOGGER.info("Received request with ID = {}", operationId);
+		IdempotentOperation<OperationResponseWithGsonPolymorphic, BusinessCheckedException> idempotentOperation =
+				new IdempotentOperation<OperationResponseWithGsonPolymorphic, BusinessCheckedException>() {
 					@Override
 					public Long getId() {
-						return data.getRequestId();
+						return operationId;
 					}
 
 					@Override
 					public Object getRequestPayload() {
-						return data;
+						return operation;
 					}
 
 					@Override
-					public OperationResponse getInProgressResponse() {
-						return OperationResponse.builder().inProgress(true).build();
+					public OperationResponseWithGsonPolymorphic getInProgressResponse() {
+						return new InProgressOperationResponse();
 					}
 
 					@Override
-					public OperationResponse process() throws BusinessCheckedException {
-						return OperationResponse.builder().inProgress(false).build();
+					public OperationResponseWithGsonPolymorphic process() throws BusinessCheckedException {
+						return new OperationProcessor2Impl().process(operation);
 					}
 
 					@Override
 					public Class<?> getResponseClass() {
-						return OperationResponse.class;
+						return OperationResponseWithGsonPolymorphic.class;
 					}
 				};
-		return idempotentOperationService.process(operation);
+		return idempotentOperationService.process(idempotentOperation);
 	}
 
 	public IdempotentOperationService getIdempotentOperationService() {

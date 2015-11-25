@@ -5,6 +5,7 @@ public class Operation {
 	private boolean throwBusinessCheckedExcetion = false;
 	private boolean throwBusinessUncheckedExcetion = false;
 	private boolean throwClientException = false;
+	private boolean throwWebApplicationException = false;
 	private boolean throwGenericThrowable = false;
 	private boolean addExecutionIndex = true;
 	private Long sleepMilis = null;
@@ -69,6 +70,15 @@ public class Operation {
 
 	public Operation setSleepMilis(Long sleepMilis) {
 		this.sleepMilis = sleepMilis;
+		return this;
+	}
+
+	public boolean isThrowWebApplicationException() {
+		return throwWebApplicationException;
+	}
+
+	public Operation setThrowWebApplicationException(boolean throwWebApplicationException) {
+		this.throwWebApplicationException = throwWebApplicationException;
 		return this;
 	}
 }
