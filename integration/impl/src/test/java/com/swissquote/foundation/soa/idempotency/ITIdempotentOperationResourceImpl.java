@@ -1,5 +1,8 @@
 package com.swissquote.foundation.soa.idempotency;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Assert;
@@ -44,16 +47,16 @@ public class ITIdempotentOperationResourceImpl {
 		// a simple operation that throws an exception
 		Operation operation1 =
 				new Operation().setThrowBusinessCheckedExcetion(true).setAddExecutionIndex(false)
-						.setDescription("BusinessCheckedException with a simple call");
+				.setDescription("BusinessCheckedException with a simple call");
 		Throwable t1 = getExeptionFromSimpleCall(operation1);
 		Assert.assertNotNull(t1);
 
 		// The same operation (that throws an exception) executed in an idempotent way
 		Long operationId = resource.createNewOperation();
 		Operation operation2 = new Operation()
-		.setThrowBusinessCheckedExcetion(true)
-		.setAddExecutionIndex(false)
-		.setDescription("BusinessCheckedException with an idempotent call");
+				.setThrowBusinessCheckedExcetion(true)
+				.setAddExecutionIndex(false)
+				.setDescription("BusinessCheckedException with an idempotent call");
 		Throwable t2 = getExeptionFromIdempotentCall(operationId, operation2);
 		Assert.assertNotNull(t2);
 		assertEquals(t2, t1);
@@ -68,18 +71,18 @@ public class ITIdempotentOperationResourceImpl {
 	public void throwingABusinessUncheckedException() {
 		// a simple operation that throws an exception
 		Operation operation1 = new Operation()
-				.setThrowBusinessUncheckedExcetion(true)
-				.setAddExecutionIndex(false)
-				.setDescription("BusinessUncheckedException with a simple call");
+		.setThrowBusinessUncheckedExcetion(true)
+		.setAddExecutionIndex(false)
+		.setDescription("BusinessUncheckedException with a simple call");
 		Throwable t1 = getExeptionFromSimpleCall(operation1);
 		Assert.assertNotNull(t1);
 
 		// The same operation (that throws an exception) executed in an idempotent way
 		Long operationId = resource.createNewOperation();
 		Operation operation2 = new Operation()
-				.setThrowBusinessUncheckedExcetion(true)
-				.setAddExecutionIndex(false)
-				.setDescription("BusinessUncheckedException with an idempotent call");
+		.setThrowBusinessUncheckedExcetion(true)
+		.setAddExecutionIndex(false)
+		.setDescription("BusinessUncheckedException with an idempotent call");
 		Throwable t2 = getExeptionFromIdempotentCall(operationId, operation2);
 		Assert.assertNotNull(t2);
 		assertEquals(t2, t1);
@@ -94,18 +97,18 @@ public class ITIdempotentOperationResourceImpl {
 	public void throwingAClientException() {
 		// a simple operation that throws an exception
 		Operation operation1 = new Operation()
-				.setThrowClientException(true)
-				.setAddExecutionIndex(false)
-				.setDescription("ClientException with a simple call");
+		.setThrowClientException(true)
+		.setAddExecutionIndex(false)
+		.setDescription("ClientException with a simple call");
 		Throwable t1 = getExeptionFromSimpleCall(operation1);
 		Assert.assertNotNull(t1);
 
 		// The same operation (that throws an exception) executed in an idempotent way
 		Long operationId = resource.createNewOperation();
 		Operation operation2 = new Operation()
-				.setThrowClientException(true)
-				.setAddExecutionIndex(false)
-				.setDescription("ClientException with an idempotent call");
+		.setThrowClientException(true)
+		.setAddExecutionIndex(false)
+		.setDescription("ClientException with an idempotent call");
 		Throwable t2 = getExeptionFromIdempotentCall(operationId, operation2);
 		Assert.assertNotNull(t2);
 		assertEquals(t2, t1);
@@ -120,18 +123,18 @@ public class ITIdempotentOperationResourceImpl {
 	public void throwingGenericThrowable() {
 		// a simple operation that throws an exception
 		Operation operation1 = new Operation()
-				.setThrowGenericThrowable(true)
-				.setAddExecutionIndex(false)
-				.setDescription("GenericThrowable with a simple call");
+		.setThrowGenericThrowable(true)
+		.setAddExecutionIndex(false)
+		.setDescription("GenericThrowable with a simple call");
 		Throwable t1 = getExeptionFromSimpleCall(operation1);
 		Assert.assertNotNull(t1);
 
 		// The same operation (that throws an exception) executed in an idempotent way
 		Long operationId = resource.createNewOperation();
 		Operation operation2 = new Operation()
-		.setThrowGenericThrowable(true)
-		.setAddExecutionIndex(false)
-				.setDescription("GenericThrowable with an idempotent call");
+				.setThrowGenericThrowable(true)
+				.setAddExecutionIndex(false)
+		.setDescription("GenericThrowable with an idempotent call");
 		Throwable t2 = getExeptionFromIdempotentCall(operationId, operation2);
 		Assert.assertNotNull(t2);
 		assertEquals(t2, t1);
@@ -287,28 +290,28 @@ public class ITIdempotentOperationResourceImpl {
 		OperationResponseWithGsonPolymorphic result =
 				new IdempotentOperation<OperationResponseWithGsonPolymorphic, BusinessCheckedException>(10, 100) {
 
-			@Override
-			public Long createNew() {
-				return resource.createNewOperation();
-			}
+					@Override
+					public Long createNew() {
+						return resource.createNewOperation();
+					}
 
-			@Override
-			public OperationResponseWithGsonPolymorphic attemptExecution(Long operationId) throws BusinessCheckedException {
-				return resource.processIdempotentOperation2(operationId, operation);
-			}
+					@Override
+					public OperationResponseWithGsonPolymorphic attemptExecution(Long operationId) throws BusinessCheckedException {
+						return resource.processIdempotentOperation2(operationId, operation);
+					}
 
-			@Override
-			public boolean isComplete(OperationResponseWithGsonPolymorphic result) {
-				hadIntermediaryResponse.set(true);
-				return !(result instanceof InProgressOperationResponse);
-			}
+					@Override
+					public boolean isComplete(OperationResponseWithGsonPolymorphic result) {
+						hadIntermediaryResponse.set(true);
+						return !(result instanceof InProgressOperationResponse);
+					}
 
-			@Override
-			public OperationResponseWithGsonPolymorphic handleNeverCompleted(OperationResponseWithGsonPolymorphic result)
-					throws BusinessCheckedException {
-				throw new BusinessCheckedException("operation did not finish");
-			}
-		}.execute();
+					@Override
+					public OperationResponseWithGsonPolymorphic handleNeverCompleted(OperationResponseWithGsonPolymorphic result)
+							throws BusinessCheckedException {
+						throw new BusinessCheckedException("operation did not finish");
+					}
+				}.execute();
 
 		Assert.assertNotNull(result);
 		Assert.assertFalse(result instanceof InProgressOperationResponse);
@@ -327,28 +330,78 @@ public class ITIdempotentOperationResourceImpl {
 		OperationResponseWithGsonPolymorphic result =
 				new IdempotentOperation<OperationResponseWithGsonPolymorphic, BusinessCheckedException>(10, 1000) {
 
-					@Override
-					public Long createNew() {
-						return resource.createNewOperation();
-					}
+			@Override
+			public Long createNew() {
+				return resource.createNewOperation();
+			}
 
-					@Override
-					public OperationResponseWithGsonPolymorphic attemptExecution(Long operationId) throws BusinessCheckedException {
-						return resource.processIdempotentOperation2(operationId, operation);
-					}
+			@Override
+			public OperationResponseWithGsonPolymorphic attemptExecution(Long operationId) throws BusinessCheckedException {
+				return resource.processIdempotentOperation2(operationId, operation);
+			}
 
-					@Override
-					public boolean isComplete(OperationResponseWithGsonPolymorphic r) {
-						return !(r instanceof InProgressOperationResponse);
-					}
+			@Override
+			public boolean isComplete(OperationResponseWithGsonPolymorphic r) {
+				return !(r instanceof InProgressOperationResponse);
+			}
 
-					@Override
-					public OperationResponseWithGsonPolymorphic handleNeverCompleted(OperationResponseWithGsonPolymorphic r)
-					throws BusinessCheckedException {
-						throw new BusinessCheckedException("operation did not finish");
-					}
-				}.execute();
+			@Override
+			public OperationResponseWithGsonPolymorphic handleNeverCompleted(OperationResponseWithGsonPolymorphic r)
+							throws BusinessCheckedException {
+				throw new BusinessCheckedException("operation did not finish");
+			}
+		}.execute();
 		Assert.assertNotNull(result);
+	}
+
+	@Test
+	public void stressTest() throws InterruptedException {
+		ExecutorService taskExecutor = Executors.newFixedThreadPool(10);
+		for (int i = 0; i < 500; i++) {
+			taskExecutor.submit(new Runnable() {
+
+				@Override
+				public void run() {
+					final Operation operation = new Operation().setAddExecutionIndex(true).setSleepMilis(3100L);
+					final AtomicBoolean hadIntermediaryResponse = new AtomicBoolean(false);
+					try {
+						OperationResponse result = new IdempotentOperation<OperationResponse, BusinessCheckedException>(10, 100) {
+
+							@Override
+							public Long createNew() {
+								return resource.createNewOperation();
+							}
+
+							@Override
+							public OperationResponse attemptExecution(Long operationId) throws BusinessCheckedException {
+								return resource.processIdempotentOperation(operationId, operation);
+							}
+
+							@Override
+							public boolean isComplete(OperationResponse result) {
+								hadIntermediaryResponse.set(true);
+								return !result.isInProgress();
+							}
+
+							@Override
+							public OperationResponse handleNeverCompleted(OperationResponse result) throws BusinessCheckedException {
+								throw new BusinessCheckedException("operation did not finish");
+							}
+						}.execute();
+						Assert.assertNotNull(result);
+						Assert.assertTrue(hadIntermediaryResponse.get());
+						Assert.assertFalse(result.isInProgress());
+
+					}
+					catch (BusinessCheckedException e) {
+						//
+					}
+				}
+			});
+		}
+		taskExecutor.shutdown();
+		taskExecutor.awaitTermination(100, TimeUnit.HOURS);
+
 	}
 
 	private void assertTheExecutionIndexIsValid(final Throwable t1) {

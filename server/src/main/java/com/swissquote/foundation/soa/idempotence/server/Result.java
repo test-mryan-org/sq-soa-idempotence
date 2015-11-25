@@ -25,7 +25,7 @@ public class Result {
 		return reason;
 	}
 
-	public Result(final boolean success, Reason reason) {
+	private Result(final boolean success, Reason reason) {
 		this.success = success;
 		this.reason = reason;
 	}

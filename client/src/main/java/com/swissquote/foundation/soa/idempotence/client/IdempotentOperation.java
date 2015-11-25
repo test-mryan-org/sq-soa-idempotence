@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
  * Use this wrapper on the client side if you are implementing an idempotent operation and you have to protect your code from responses that
  * could be incomplete (the client receives an answer from the server, but that is not the business one it is expecting but one sent by the
  * server side layer that deals with operations that have already been started but have not yet finished ).
- *
  * @param <T> The type of your response
  * @param <E> The exception that could be thrown by the soa code (usually a BusinessCheckedException)
  * @author Andrei Niculescu (andrei.niculescu@swissquote.ch)
@@ -36,7 +35,7 @@ public abstract class IdempotentOperation<T, E extends Throwable> {
 		this.sleepMillis = sleepMillis;
 	}
 
-	public synchronized T execute() throws E {
+	public T execute() throws E {
 		Long operationId = createNew();
 
 		LOGGER.debug("Using operationId = {}", operationId);
@@ -64,7 +63,7 @@ public abstract class IdempotentOperation<T, E extends Throwable> {
 
 	public abstract boolean isComplete(final T result);
 
-	public synchronized boolean canRetry() {
+	public boolean canRetry() {
 		return noOfCalls > 0;
 	}
 
@@ -80,7 +79,7 @@ public abstract class IdempotentOperation<T, E extends Throwable> {
 		}
 	}
 
-	public synchronized void callPerformed() {
+	public void callPerformed() {
 		noOfCalls--;
 	}
 
