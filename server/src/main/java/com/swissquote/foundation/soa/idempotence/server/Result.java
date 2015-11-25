@@ -25,17 +25,13 @@ public class Result {
 		return reason;
 	}
 
-	public Result(final boolean success) {
-		this(true, null);
-	}
-
 	public Result(final boolean success, Reason reason) {
 		this.success = success;
 		this.reason = reason;
 	}
 
 	public static Result success() {
-		return new Result(true);
+		return new Result(true, null);
 	}
 
 	public static Result fail(final Reason reason) {

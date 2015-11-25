@@ -7,9 +7,10 @@ import org.slf4j.LoggerFactory;
  * Use this wrapper on the client side if you are implementing an idempotent operation and you have to protect your code from responses that
  * could be incomplete (the client receives an answer from the server, but that is not the business one it is expecting but one sent by the
  * server side layer that deals with operations that have already been started but have not yet finished ).
- * @author Andrei Niculescu (andrei.niculescu@swissquote.ch)
+ *
  * @param <T> The type of your response
  * @param <E> The exception that could be thrown by the soa code (usually a BusinessCheckedException)
+ * @author Andrei Niculescu (andrei.niculescu@swissquote.ch)
  */
 public abstract class IdempotentOperation<T, E extends Throwable> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(IdempotentOperation.class);
@@ -17,34 +18,34 @@ public abstract class IdempotentOperation<T, E extends Throwable> {
 	private static final int NUBER_OF_CALLS = 20;
 	private static final int SLEEP_MILIS_BEFORE_RETRYING = 4000;
 	private int noOfCalls;
-	private int sleepMilis;
+	private int sleepMillis;
 
 	public IdempotentOperation() {
 		this(NUBER_OF_CALLS, SLEEP_MILIS_BEFORE_RETRYING);
 	}
 
-	public IdempotentOperation(final int noOfCalls, final int sleepMilis) {
+	public IdempotentOperation(final int noOfCalls, final int sleepMillis) {
 		if (noOfCalls <= 0) {
 			throw new IllegalArgumentException("'noOfCalls' has to be a positive and greater than 0");
 		}
 		this.noOfCalls = noOfCalls;
 
-		if (sleepMilis <= 0) {
-			throw new IllegalArgumentException("'sleepMilis' has to be a positive and greater than 0");
+		if (sleepMillis <= 0) {
+			throw new IllegalArgumentException("'sleepMillis' has to be a positive and greater than 0");
 		}
-		this.sleepMilis = sleepMilis;
+		this.sleepMillis = sleepMillis;
 	}
 
 	public synchronized T execute() throws E {
 		Long operationId = createNew();
 
-		LOGGER.debug("Using operationId {} ", operationId);
+		LOGGER.debug("Using operationId = {}", operationId);
 
 		T result = attemptExecution(operationId);
 		callPerformed();
 		while (!isComplete(result) && canRetry()) {
 			sleep();
-			LOGGER.info("Received 'inProgress' response for operationId = " + operationId + ". Retrying ...");
+			LOGGER.info("Received 'inProgress' response for operationId = {}. Retrying ...", operationId);
 			result = attemptExecution(operationId);
 			callPerformed();
 		}
@@ -53,7 +54,7 @@ public abstract class IdempotentOperation<T, E extends Throwable> {
 			return result;
 		}
 
-		LOGGER.warn("Operation [" + operationId + "] did not complete ... ");
+		LOGGER.warn("Operation [{}] did not complete ... ", operationId);
 		return handleNeverCompleted(result);
 	}
 
@@ -71,10 +72,11 @@ public abstract class IdempotentOperation<T, E extends Throwable> {
 
 	public void sleep() {
 		try {
-			Thread.sleep(sleepMilis);
+			Thread.sleep(sleepMillis);
 		}
 		catch (InterruptedException e) {
 			// do nothing if interrupted
+			LOGGER.warn("Interruption occurred", e);
 		}
 	}
 
@@ -87,7 +89,7 @@ public abstract class IdempotentOperation<T, E extends Throwable> {
 	}
 
 	public int getSleepMilis() {
-		return sleepMilis;
+		return sleepMillis;
 	}
 
 }

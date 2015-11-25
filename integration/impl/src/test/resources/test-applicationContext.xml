@@ -3,40 +3,40 @@
 	   xmlns:context="http://www.springframework.org/schema/context"
 	   xmlns="http://www.springframework.org/schema/beans"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans
-	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd 
+	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 	http://www.springframework.org/schema/context
 	http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
-	<!-- 
+	<!--
 	<context:annotation-config/>
 	<context:property-placeholder/>
 	 -->
 
-    <bean id="applicationName" class="java.lang.String">
-        <constructor-arg value="client-sq-soa-idempotence-integration-soa"/>
-    </bean>
-    
-    
-     <context:property-placeholder ignore-unresolvable="true" />
+	<bean id="applicationName" class="java.lang.String">
+		<constructor-arg value="client-sq-soa-idempotence-integration-soa"/>
+	</bean>
 
-	 <bean id="itConfig" class="com.swissquote.foundation.itconfig.core.ITConfig">
-       <constructor-arg value="#{applicationName}"/>
-    </bean>
 
-     <bean class="com.swissquote.foundation.itconfig.spring.context.ITConfigPostProcessor">
-       <constructor-arg ref="itConfig"/>
-   </bean>
-   
+	<context:property-placeholder ignore-unresolvable="true"/>
+
+	<bean id="itConfig" class="com.swissquote.foundation.itconfig.core.ITConfig">
+		<constructor-arg value="#{applicationName}"/>
+	</bean>
+
+	<bean class="com.swissquote.foundation.itconfig.spring.context.ITConfigPostProcessor">
+		<constructor-arg ref="itConfig"/>
+	</bean>
+
 	<bean id="orderWebProxyFactory" class="com.swissquote.foundation.soa.client.spring.DefaultWebProxyFactory">
-        <constructor-arg value="#{applicationName}" />
-    </bean>   
-   
-   	<bean id="pingResource" class="com.swissquote.foundation.soa.client.spring.WebProxyFactoryBean">
-        <property name="resourceInterface" value="com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.PingResource"/>
-    </bean>
+		<constructor-arg value="#{applicationName}"/>
+	</bean>
 
-   	<bean id="idempotentOperationResource" class="com.swissquote.foundation.soa.client.spring.WebProxyFactoryBean">
-        <property name="resourceInterface" value="com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.IdempotentOperationResource"/>
-    </bean>
-    
+	<bean id="pingResource" class="com.swissquote.foundation.soa.client.spring.WebProxyFactoryBean">
+		<property name="resourceInterface" value="com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.PingResource"/>
+	</bean>
+
+	<bean id="idempotentOperationResource" class="com.swissquote.foundation.soa.client.spring.WebProxyFactoryBean">
+		<property name="resourceInterface" value="com.swissquote.foundation.soa.idempotency.rest.api.v1.resources.IdempotentOperationResource"/>
+	</bean>
+
 </beans>

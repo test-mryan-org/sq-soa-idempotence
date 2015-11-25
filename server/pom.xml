@@ -6,7 +6,9 @@
 	<parent>
 		<artifactId>sq-soa-idempotence-parent</artifactId>
 		<groupId>com.swissquote.foundation.soa</groupId>
+		<!--Should match sq-soa-->
 		<version>1.3.2-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>sq-soa-idempotence-server</artifactId>
@@ -24,6 +26,7 @@
 
 		<!-- test -->
 		<jetty.version>9.2.13.v20150730</jetty.version>
+		<sq-soa-support-platform.version>1.3.2</sq-soa-support-platform.version>
 	</properties>
 
 	<dependencies>
@@ -35,9 +38,9 @@
 		<dependency>
 			<groupId>com.swissquote.foundation.soa</groupId>
 			<artifactId>sq-soa-support-platform</artifactId>
-			<version>1.3.2</version>
+			<version>${sq-soa-support-platform.version}</version>
 			<scope>provided</scope>
-		</dependency>		
+		</dependency>
 		<dependency>
 		    <groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -67,7 +70,7 @@
 			<version>2.2.0.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- 
+		<!--
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
