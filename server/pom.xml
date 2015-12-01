@@ -6,7 +6,7 @@
 		<artifactId>sq-soa-idempotence</artifactId>
 		<groupId>com.swissquote.foundation.soa</groupId>
 		<!--Should match sq-soa-->
-		<version>1.3.3-SNAPSHOT</version>
+		<version>1.3.4-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -20,7 +20,6 @@
 
 		<!-- test -->
 		<jetty.version>9.2.13.v20150730</jetty.version>
-		<sq-soa-support-platform.version>1.3.2</sq-soa-support-platform.version>
 	</properties>
 
 	<dependencies>
@@ -32,7 +31,6 @@
 		<dependency>
 			<groupId>com.swissquote.foundation.soa</groupId>
 			<artifactId>sq-soa-support-platform</artifactId>
-			<version>${sq-soa-support-platform.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

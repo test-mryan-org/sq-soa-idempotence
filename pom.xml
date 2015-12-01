@@ -13,7 +13,7 @@
 	<artifactId>sq-soa-idempotence</artifactId>
 	<name>${project.artifactId}</name>
 	<!--Should match sq-soa-platform-->
-	<version>1.3.3-SNAPSHOT</version>
+	<version>1.3.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -33,7 +33,7 @@
 		<junit.version>4.11</junit.version>
 		<log4j.version>1.2.17</log4j.version>
 		<spring.version>3.2.14.RELEASE</spring.version>
-		<sq-soa-platform.version>1.3.2</sq-soa-platform.version>
+		<sq-soa-platform.version>1.3.4</sq-soa-platform.version>
 		<jsr311-api.version>1.1.1</jsr311-api.version>
 		<jsr250-api.version>1.0</jsr250-api.version>
 		<validation-api.version>1.0.0.GA</validation-api.version>
