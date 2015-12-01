@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>com.swissquote.foundation.soa</groupId>
 		<artifactId>sq-soa-idempotence-integration</artifactId>
-		<version>1.3.3-SNAPSHOT</version>
+		<version>1.3.2.3-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>sq-soa-idempotence-integration-soa</artifactId>
@@ -24,7 +25,8 @@
 		<mockito.version>1.10.19</mockito.version>
 
 
-		<!-- WARNING, also update web.xml jersey package scanning if you change this -->
+		<!-- WARNING, also update web.xml jersey package scanning if you change 
+			this -->
 		<!-- This is used for Doc generation and api/impl resource validation -->
 		<resources.package>com.swissquote.foundation.soa.idempotency.rest.resources</resources.package>
 
@@ -189,109 +191,120 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<!-- <groupId>org.mortbay.jetty</groupId> <artifactId>jetty-maven-plugin</artifactId> -->
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-				<version>9.2.13.v20150730</version>
-				<executions>
-					<execution>
-						<id>start-jetty</id>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<!-- stop any previous instance to free up the port -->
-							<goal>stop</goal>
-							<goal>start</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<scanIntervalSeconds>1</scanIntervalSeconds>
-					<stopPort>8005</stopPort>
-					<stopKey>STOP</stopKey>
-					<war>${project.basedir}/target/sq-soa-idempotence-integration-soa-${project.version}.war</war>
-					<webApp>
-						<contextPath>/sq-soa-idempotence-integration-soa</contextPath>
-					</webApp>
-				    <loginServices>
-				      <loginService implementation="org.eclipse.jetty.security.HashLoginService">
-				        <name>Test Realm</name>
-				        <config>${project.basedir}/realm.properties</config>
-				      </loginService>
-				    </loginServices>
-					<systemProperties>
-						<systemProperty>
-							<name>java.security.manager</name>
-							<value>true</value>
-						</systemProperty>
-						<systemProperty>
-							<name>java.security.policy</name>
-							<value>file:${project.basedir}/jetty.policy</value>
-						</systemProperty>
-						<systemProperty>
-							<name>sq.env.type</name>
-							<value>dev</value>
-						</systemProperty>
-						<systemProperty>
-							<name>sq.itconfig.path</name>
-							<value>${project.basedir}/it_config</value>
-						</systemProperty>
-						<systemProperty>
-							<name>imqSSLIsHostTrusted</name>
-							<value>true</value>
-						</systemProperty>
-						<systemProperty>
-							<name>sq.webapp.logdir</name>
-							<value>${project.build.directory}</value>
-						</systemProperty>
-					</systemProperties>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>log4j</groupId>
-						<artifactId>log4j</artifactId>
-						<version>1.2.16</version>
-					</dependency>
-					<dependency>
-						<groupId>org.slf4j</groupId>
-						<artifactId>slf4j-api</artifactId>
-						<version>1.7.5</version>
-					</dependency>
-					<dependency>
-						<groupId>org.slf4j</groupId>
-						<artifactId>slf4j-log4j12</artifactId>
-						<version>1.7.5</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-failsafe-plugin</artifactId>
-			<executions>
-				<execution>
-					<id>integration-test</id>
-					<goals>
-						<goal>integration-test</goal>
-					</goals>
-				</execution>
-				<execution>
-					<id>verify</id>
-					<goals>
-						<goal>verify</goal>
-					</goals>
-				</execution>
-			</executions>
-			<configuration>
-				<systemPropertyVariables>
-					<sq.itconfig.path>${project.basedir}/src/test/resources/it_config</sq.itconfig.path>
-				</systemPropertyVariables>
-			</configuration>
-		</plugin>
 
 
-		<!-- curl -v __noproxy localhost -u dev:dev http://localhost:8080/sq-soa-idempotence-integration-soa/api/MyService-V1/ping/world -->
-		<!-- curl -v __noproxy localhost -u dev:dev http://localhost:8080/sq-soa-idempotence-integration-soa/api/MyService-V1/ping/world -->
 
 		</plugins>
 	</build>
+
+
+	<profiles>
+		<profile>
+			<id>integration-tests</id>
+			<build>
+				<plugins>
+					<plugin>
+						<!-- <groupId>org.mortbay.jetty</groupId> <artifactId>jetty-maven-plugin</artifactId> -->
+						<groupId>org.eclipse.jetty</groupId>
+						<artifactId>jetty-maven-plugin</artifactId>
+						<version>9.2.13.v20150730</version>
+						<executions>
+							<execution>
+								<id>start-jetty</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<!-- stop any previous instance to free up the port -->
+									<goal>stop</goal>
+									<goal>start</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<scanIntervalSeconds>1</scanIntervalSeconds>
+							<stopPort>8005</stopPort>
+							<stopKey>STOP</stopKey>
+							<war>${project.basedir}/target/sq-soa-idempotence-integration-soa-${project.version}.war</war>
+							<webApp>
+								<contextPath>/sq-soa-idempotence-integration-soa</contextPath>
+							</webApp>
+							<loginServices>
+								<loginService implementation="org.eclipse.jetty.security.HashLoginService">
+									<name>Test Realm</name>
+									<config>${project.basedir}/realm.properties</config>
+								</loginService>
+							</loginServices>
+							<systemProperties>
+								<systemProperty>
+									<name>java.security.manager</name>
+									<value>true</value>
+								</systemProperty>
+								<systemProperty>
+									<name>java.security.policy</name>
+									<value>file:${project.basedir}/jetty.policy</value>
+								</systemProperty>
+								<systemProperty>
+									<name>sq.env.type</name>
+									<value>dev</value>
+								</systemProperty>
+								<systemProperty>
+									<name>sq.itconfig.path</name>
+									<value>${project.basedir}/it_config</value>
+								</systemProperty>
+								<systemProperty>
+									<name>imqSSLIsHostTrusted</name>
+									<value>true</value>
+								</systemProperty>
+								<systemProperty>
+									<name>sq.webapp.logdir</name>
+									<value>${project.build.directory}</value>
+								</systemProperty>
+							</systemProperties>
+						</configuration>
+						<dependencies>
+							<dependency>
+								<groupId>log4j</groupId>
+								<artifactId>log4j</artifactId>
+								<version>1.2.16</version>
+							</dependency>
+							<dependency>
+								<groupId>org.slf4j</groupId>
+								<artifactId>slf4j-api</artifactId>
+								<version>1.7.5</version>
+							</dependency>
+							<dependency>
+								<groupId>org.slf4j</groupId>
+								<artifactId>slf4j-log4j12</artifactId>
+								<version>1.7.5</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+					<!-- curl -v __noproxy localhost -u dev:dev http://localhost:8080/sq-soa-idempotence-integration-soa/api/MyService-V1/ping/world -->
+					<!-- curl -v __noproxy localhost -u dev:dev http://localhost:8080/sq-soa-idempotence-integration-soa/api/MyService-V1/ping/world -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>integration-test</id>
+								<goals>
+									<goal>integration-test</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>verify</id>
+								<goals>
+									<goal>verify</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<systemPropertyVariables>
+								<sq.itconfig.path>${project.basedir}/src/test/resources/it_config</sq.itconfig.path>
+							</systemPropertyVariables>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

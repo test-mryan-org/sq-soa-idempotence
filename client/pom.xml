@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.swissquote.foundation.soa</groupId>
 		<artifactId>sq-soa-idempotence</artifactId>
-		<version>1.3.3-SNAPSHOT</version>
+		<version>1.3.2.3-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
