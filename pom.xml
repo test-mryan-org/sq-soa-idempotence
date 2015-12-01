@@ -25,7 +25,7 @@
 	</modules>
 
 	<properties>
-		<sq.maintainer.email>prd.bankingplatform@swissquote.ch</sq.maintainer.email>
+		<sq.maintainer.email>andrei.niculescu@swissquote.ch</sq.maintainer.email>
 
 		<maven.compile.source>1.7</maven.compile.source>
 		<maven.compile.target>1.7</maven.compile.target>
