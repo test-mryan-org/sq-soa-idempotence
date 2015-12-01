@@ -3,10 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<artifactId>sq-soa-idempotence-parent</artifactId>
+		<artifactId>sq-soa-idempotence</artifactId>
 		<groupId>com.swissquote.foundation.soa</groupId>
 		<!--Should match sq-soa-->
-		<version>1.3.3-SNAPSHOT</version>
+		<version>1.3.2.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 

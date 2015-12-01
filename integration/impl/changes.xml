@@ -3,6 +3,9 @@
 		  xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/plugins/maven-changes-plugin/xsd/changes-1.0.0.xsd">
     <!-- type=add|update|remove|fix -->
 	<body>
+		<release version="1.3.2.1">
+			<action dev="anicules" type="add">build for platform 1.3.2</action>
+		</release>
 		<release version="1.3.2">
 			<action dev="anicules" type="add">'first' version of this module</action>
 		</release>
