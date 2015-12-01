@@ -13,7 +13,7 @@
 	<artifactId>sq-soa-idempotence-parent</artifactId>
 	<name>${project.artifactId}</name>
 	<!--Should match sq-soa-platform-->
-	<version>1.3.2</version>
+	<version>1.3.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -195,12 +195,12 @@
 
 	<issueManagement>
 		<system>Jira</system>
-		<url>scm:hg:https://dev-tools.info.swissquote.ch:444/hg/client-realations/sqc-idempotent-operation/</url>
+		<url>scm:hg:https://dev-tools.info.swissquote.ch:444/hg/foundation/sq-soa-idempotence</url>
 	</issueManagement>
 
 	<scm>
-		<connection>scm:hg:https://dev-tools.info.swissquote.ch:444/hg/client-realations/sqc-idempotent-operation</connection>
-		<developerConnection>scm:hg:https://dev-tools.info.swissquote.ch:444/hg/client-realations/sqc-idempotent-operation</developerConnection>
+		<connection>scm:hg:https://dev-tools.info.swissquote.ch:444/hg/foundation/sq-soa-idempotence</connection>
+		<developerConnection>scm:hg:https://dev-tools.info.swissquote.ch:444/hg/foundation/sq-soa-idempotence</developerConnection>
 	  <tag>sq-soa-idempotence-parent-1.3.2</tag>
   </scm>
 </project>
