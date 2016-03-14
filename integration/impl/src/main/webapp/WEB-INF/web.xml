@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+		 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+	<display-name>sq-soa-idempotence-integration-soa</display-name>
+
+	<context-param>
+		<param-name>application-name</param-name>
+		<param-value>sq-soa-idempotence-integration-soa</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>sq.soa.sq-soa-idempotence-integration-v1</param-name>
+		<param-value>
+			com.swissquote.foundation.soa.idempotency.rest.v1,
+			com.swissquote.foundation.monitoring.metrics.jersey.server <!-- Do not remove monitoring -->
+		</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:applicationContext.xml</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+</web-app>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.swissquote.foundation.soa</groupId>
+		<artifactId>sq-soa-idempotence-integration</artifactId>
+		<version>2.0.11-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>sq-soa-idempotence-integration-api-v1</artifactId>
+	<name>${project.artifactId}</name>
+
+	<properties>
+		<sq.artifact.type>api</sq.artifact.type>
+	</properties>
+
+	<dependencies>
+
+		<!-- This is for the @Path annotations -->
+		<!-- Scope is provided as client can use the JAX-RS 2 (javax.ws.rs:javax.ws.rs-api:2.0-rc2) -->
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>jsr311-api</artifactId>
+			<version>${jsr311-api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- This is for the @RolesAllowed annotations -->
+		<!-- Scope is provided as client the same annotations are also bundled
+			in javax.annotation:javax.annotation-api:1.2-* which comes with JAX-RS 2 -->
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>jsr250-api</artifactId>
+			<version>${jsr250-api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.swissquote.foundation.soa</groupId>
+			<artifactId>sq-soa-support-api</artifactId>
+			<version>${sq-soa-platform.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>${validation-api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<!-- generate swagger json and package it in the jar -->
+		<plugins>
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.4.0</version>
+				<configuration>
+					<executable>docker</executable>
+					<arguments>
+						<argument>run</argument>
+						<argument>--rm</argument>
+						<argument>-v</argument>
+						<argument>${project.basedir}/src/main:/sources:ro</argument>
+						<argument>-v</argument>
+						<argument>${project.build.directory}/dependency:/dependencies:ro</argument>
+						<argument>-v</argument>
+						<argument>${project.build.directory}:/output</argument>
+						<argument>-e</argument>
+						<argument>JAVADOC_ARGS=-apiInfoFile /sources/swagger/apiinfo.json -apiBasePath
+							{{context}}/api/sq-soa-idempotence-integration-v1 -apiVersion v1:(${project.version}) -skipUiFiles
+						</argument>
+						<argument>mryan/swagger-generator-java</argument>
+					</arguments>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.7</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/classes/META-INF/resources/swagger/sq-soa-idempotence-integration-v1/
+							</outputDirectory>
+							<resources>
+								<resource>
+									<directory>target/swagger-2.0</directory>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
