@@ -9,7 +9,5 @@ public interface IdempotentOperationManager {
 
 	Result markAsFailed(Long operationId, String exceptionAsJson);
 
-	Result markAsError(Long operationId);
-
 	String getJsonContent(Long operationId);
 }

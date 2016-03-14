@@ -1,0 +1,4 @@
+<Context>
+	<Parameter name="jersey.config.server.tracing.type" value="ALL" override="false"/>
+	<Parameter name="jersey.config.server.provider.classnames" value="org.glassfish.jersey.filter.LoggingFilter" override="false"/>
+</Context>

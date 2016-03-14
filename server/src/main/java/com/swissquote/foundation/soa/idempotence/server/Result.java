@@ -1,16 +1,18 @@
 package com.swissquote.foundation.soa.idempotence.server;
 
-public class Result {
+import java.util.Objects;
+
+public final class Result {
 	private final boolean success;
 	private final Reason reason;
 
-	public static enum Reason {
+	public enum Reason {
 		NO_OPERATION_FOUND, //
 		IN_PROGRESS, //
 		ALREADY_FINISHED_WITH_EXCEPTION, //
 		ALREADY_FINISHED, //
 		UNEXPECTED_STATUS, //
-		UNKNOWN;
+		UNKNOWN
 	}
 
 	public boolean succeeded() {
@@ -36,5 +38,27 @@ public class Result {
 
 	public static Result fail(final Reason reason) {
 		return new Result(false, reason);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		Result result = (Result) o;
+		return success == result.success && reason == result.reason;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(success, reason);
+	}
+
+	@Override
+	public String toString() {
+		return "Result{" + "success=" + success + ", reason=" + reason + '}';
 	}
 }

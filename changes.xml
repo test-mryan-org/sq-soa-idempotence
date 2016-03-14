@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/changes/1.0.0"
 		  xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/plugins/maven-changes-plugin/xsd/changes-1.0.0.xsd">
-    <!-- type=add|update|remove|fix -->
+	<!-- type=add|update|remove|fix -->
 	<body>
+		<release version="2.0.11">
+			<action dev="mriahi" type="add">build for platform 2.0.x</action>
+		</release>
 		<release version="1.3.4">
 			<action dev="anicules" type="add">build for platform 1.3.4</action>
 		</release>

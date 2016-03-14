@@ -1,0 +1,18 @@
+syntax:glob
+
+# Eclipse
+.classpath
+.project
+.settings
+
+# Intellij
+.idea
+*.iml
+
+# Mac
+.DS_Store
+
+# Maven
+build.log
+api-v1/target
+impl/target

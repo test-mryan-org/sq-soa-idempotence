@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn">
+	<Properties>
+		<Property name="sq.logging.pattern">[%d{dd/MM/yy HH:mm:ss.SSS}] %-5p [%.8t] [%X{sq-correlation-id}] [%c{1}] %m%n</Property>
+		<Property name="sq.logging.max.size">200 MB</Property>
+	</Properties>
+	<Appenders>
+		<RollingFile name="file" fileName="${sys:sq.webapp.logdir}/sq-soa-idempotence-integration-soa.log"
+					 filePattern="${sys:sq.webapp.logdir}/archives/sq-soa-idempotence-integration-soa-%d{yyyy-MM-dd}-%i.log.gz">
+			<PatternLayout pattern="${sys:sq.logging.pattern}"/>
+			<Policies>
+				<TimeBasedTriggeringPolicy/>
+				<SizeBasedTriggeringPolicy size="${sys:sq.logging.max.size}"/>
+			</Policies>
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<Logger name="com.swissquote" level="info" additivity="false">
+			<AppenderRef ref="file"/>
+		</Logger>
+		<Root level="warn">
+			<AppenderRef ref="file"/>
+		</Root>
+	</Loggers>
+</configuration>

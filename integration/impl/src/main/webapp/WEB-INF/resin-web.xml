@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://caucho.com/ns/resin">
-	<stdout-log path="${sq.webapp.logdir}/sq-soa-idempotence-integration-soa-stdout.log" rollover-period="1D"
-				archive-format="./archives/sq-soa-idempotence-integration-soa-stdout.log.%Y-%m-%d.gz" />
-	<stderr-log path="${sq.webapp.logdir}/sq-soa-idempotence-integration-soa-stderr.log" rollover-period="1D"
-				archive-format="./archives/sq-soa-idempotence-integration-soa-stderr.log.%Y-%m-%d.gz" />
-</web-app>

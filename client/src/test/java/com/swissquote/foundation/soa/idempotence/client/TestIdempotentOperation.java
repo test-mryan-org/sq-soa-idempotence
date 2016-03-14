@@ -23,27 +23,27 @@ public class TestIdempotentOperation {
 
 	@Test
 	public void objectCorrectlyBuilt() {
-		IdempotentOperation<OperationResult, OperationException> opertion = createIdempotentOperation(10, 1000);
+		ClientIdempotentOperation<OperationResult> opertion = createIdempotentOperation(10, 1000);
 		Assert.assertEquals(10, opertion.getNoOfCalls());
-		Assert.assertEquals(1000, opertion.getSleepMilis());
+		Assert.assertEquals(1000, opertion.getSleepMillis());
 	}
 
-	private IdempotentOperation<OperationResult, OperationException> createIdempotentOperation(final int noOfCalls, final int sleepMilis) {
+	private ClientIdempotentOperation<OperationResult> createIdempotentOperation(final int noOfCalls, final int sleepMilis) {
 		return createIdempotentOperation(noOfCalls, sleepMilis, 10);
 	}
 
-	private IdempotentOperation<OperationResult, OperationException> createIdempotentOperation(final int noOfCalls, final int sleepMilis,
+	private ClientIdempotentOperation<OperationResult> createIdempotentOperation(final int noOfCalls, final int sleepMilis,
 			final int completeAfter) {
 		final OperationResultFactory factory = Factories.createCompletingIn(completeAfter);
 
-		return new IdempotentOperation<OperationResult, OperationException>(noOfCalls, sleepMilis) {
+		return new ClientIdempotentOperation<OperationResult>(noOfCalls, sleepMilis) {
 			@Override
 			public Long createNew() {
 				return operationIdGenerator.incrementAndGet();
 			}
 
 			@Override
-			public OperationResult attemptExecution(final Long operationId) throws OperationException {
+			public OperationResult attemptExecution(final Long operationId) {
 				return factory.createOperationResult();
 			}
 
@@ -53,7 +53,7 @@ public class TestIdempotentOperation {
 			}
 
 			@Override
-			public OperationResult handleNeverCompleted(final OperationResult result) throws OperationException {
+			public OperationResult handleNeverCompleted(final OperationResult result) {
 				throw new OperationException();
 			}
 
@@ -65,10 +65,10 @@ public class TestIdempotentOperation {
 		final Set<Long> operationIds = new HashSet<Long>();
 		final OperationResultFactory factory = Factories.createCompletingIn(8);
 
-		new IdempotentOperation<OperationResult, OperationException>(10, 1) {
+		new ClientIdempotentOperation<OperationResult>(10, 1) {
 			@Override
 			public Long createNew() {
-				return Long.valueOf(operationIdGenerator.incrementAndGet());
+				return operationIdGenerator.incrementAndGet();
 			}
 
 			@Override

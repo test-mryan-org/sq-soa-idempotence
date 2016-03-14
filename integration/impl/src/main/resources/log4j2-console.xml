@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn">
+	<Properties>
+		<Property name="sq.logging.pattern">[%d{dd/MM/yy HH:mm:ss.SSS}] %-5p [%.8t] [%X{sq-correlation-id}] [%c{1}] %m%n</Property>
+	</Properties>
+	<Appenders>
+		<Console name="console" target="SYSTEM_OUT">
+			<PatternLayout pattern="${sys:sq.logging.pattern}"/>
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Logger name="com.swissquote" level="info" additivity="false">
+			<AppenderRef ref="console"/>
+		</Logger>
+		<Logger name="com.swissquote.foundation.soa.idempotence" level="debug" additivity="false">
+			<AppenderRef ref="console"/>
+		</Logger>
+		<Logger name="org.glassfish.jersey.filter.LoggingFilter" level="info" additivity="false">
+			<AppenderRef ref="console"/>
+		</Logger>
+		<Root level="warn">
+			<AppenderRef ref="console"/>
+		</Root>
+	</Loggers>
+</configuration>

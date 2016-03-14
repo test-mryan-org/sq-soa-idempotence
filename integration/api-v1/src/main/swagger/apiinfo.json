@@ -1,0 +1,5 @@
+{
+  "title": "sq-soa-idempotence-integration-v1",
+  "description": "Add a description for the service in /api-v1/src/main/swagger/apiinfo.json",
+  "contact": "andrei.niculescu@swissquote.ch"
+}
