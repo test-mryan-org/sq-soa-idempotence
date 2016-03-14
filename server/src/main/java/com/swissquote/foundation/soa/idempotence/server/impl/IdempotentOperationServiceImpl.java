@@ -3,6 +3,9 @@ package com.swissquote.foundation.soa.idempotence.server.impl;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.swissquote.foundation.soa.idempotence.server.IdempotentOperation;
 import com.swissquote.foundation.soa.idempotence.server.IdempotentOperationManager;
 import com.swissquote.foundation.soa.idempotence.server.IdempotentOperationService;
@@ -28,6 +31,7 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@SuppressWarnings("PMD.AvoidCatchingGenericException")
 	public <T> T process(final IdempotentOperation<T> operation) {
 
@@ -43,13 +47,18 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 		log.debug("Operation marked as 'in progress'. Starting job processing  ...");
 
 		try {
-			T processingResponse = operation.process();
-			return processSuccess(operation, processingResponse);
+			return processOperation(operation);
 		}
 		catch (Exception exception) {
 			log.warn(String.format("Got a %s", exception.getClass().getSimpleName()), exception);
 			throw processException(operation, exception);
 		}
+	}
+
+	@Transactional
+	private <T> T processOperation(IdempotentOperation<T> operation) throws Exception {
+		T processingResponse = operation.process();
+		return processSuccess(operation, processingResponse);
 	}
 
 	private <T> WebApplicationException processException(final IdempotentOperation<T> operation, Exception exception) {
