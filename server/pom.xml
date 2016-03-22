@@ -6,7 +6,7 @@
 		<artifactId>sq-soa-idempotence</artifactId>
 		<groupId>com.swissquote.foundation.soa</groupId>
 		<!--Should match sq-soa-->
-		<version>2.0.11</version>
+		<version>2.0.12-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>sq-soa-idempotence-server</artifactId>
