@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -14,7 +13,7 @@
 	<artifactId>sq-soa-idempotence</artifactId>
 	<name>${project.artifactId}</name>
 	<!--Should match sq-soa-platform-->
-	<version>2.0.11-SNAPSHOT</version>
+	<version>2.0.11</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -217,5 +216,6 @@
 	<scm>
 		<connection>scm:hg:https://dev-tools.info.swissquote.ch:444/hg/foundation/sq-soa-idempotence</connection>
 		<developerConnection>scm:hg:https://dev-tools.info.swissquote.ch:444/hg/foundation/sq-soa-idempotence</developerConnection>
-	</scm>
+	  <tag>sq-soa-idempotence-2.0.11</tag>
+  </scm>
 </project>
