@@ -14,6 +14,12 @@ public interface IdempotentOperationService {
 	Long createNewOperation();
 
 	/**
+	 * Method that sets externalId as identifier on the server side and returns it to the client
+	 * @return
+	 */
+	Long createNewOperationWithExternalId(String externalId);
+
+	/**
 	 * Method that processes in an idempotent manner the operation that is encapsulated in the parameter.
 	 * @param operation
 	 * @return
