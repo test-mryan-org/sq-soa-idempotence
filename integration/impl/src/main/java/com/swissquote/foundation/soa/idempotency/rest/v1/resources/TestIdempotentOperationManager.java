@@ -24,6 +24,14 @@ public class TestIdempotentOperationManager implements IdempotentOperationManage
 	}
 
 	@Override
+	public Long createNewOperationWithExternalId(String externalTransferId) {
+		Operation operation = new Operation();
+		operation.setId(Long.parseLong(externalTransferId));
+		map.put(operation.getId(), operation);
+		return operation.getId();
+	}
+
+	@Override
 	public Result markAsInProgress(final Long operationId, final String requestAsJson) {
 		Operation operation = map.get(operationId);
 		if (operation == null) {
@@ -144,6 +152,10 @@ public class TestIdempotentOperationManager implements IdempotentOperationManage
 
 		public void setContent(String content) {
 			this.content = content;
+		}
+
+		public void setId(Long externalId) {
+			this.id = externalId;
 		}
 
 	}

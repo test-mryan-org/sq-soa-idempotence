@@ -41,6 +41,15 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 	}
 
 	/**
+	 * Method that sets externalId as identifier on the server side and returns it to the client
+	 * @return
+	 */
+	@Override
+	public Long createNewOperationWithExternalId(String externalId) {
+		return operationManager.createNewOperationWithExternalId(externalId);
+	}
+
+	/**
 	 * Method that processes in an idempotent manner the operation that is encapsulated in the parameter. It returns either the predefined
 	 * response for an "in progress operation" or the result of the encapsulated operation.
 	 * @param operation
