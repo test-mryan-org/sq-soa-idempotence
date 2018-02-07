@@ -52,15 +52,4 @@
 		</dependency>
 	</dependencies>
 
-	<issueManagement>
-		<system>Jira</system>
-		<url>https://dev-tools.info.swissquote.ch:444/hg/foundation/sq-soa-idempotence</url>
-	</issueManagement>
-
-
-	<scm>
-		<connection>scm:hg:https://dev-tools.info.swissquote.ch:444/hg/foundation/sq-soa-idempotence</connection>
-		<developerConnection>scm:hg:https://dev-tools.info.swissquote.ch:444/hg/foundation/sq-soa-idempotence</developerConnection>
-	  <tag>sq-soa-idempotence-2.0.11</tag>
-  </scm>
 </project>

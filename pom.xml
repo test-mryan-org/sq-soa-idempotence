@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.swissquote</groupId>
 		<artifactId>sq-parent-pom</artifactId>
-		<version>15.10.4</version>
+		<version>17.7.1</version>
 	</parent>
 
 	<groupId>com.swissquote.foundation.soa</groupId>
@@ -213,8 +213,7 @@
 	</issueManagement>
 
 	<scm>
-		<connection>scm:hg:https://dev-tools.info.swissquote.ch:444/hg/foundation/sq-soa-idempotence</connection>
-		<developerConnection>scm:hg:https://dev-tools.info.swissquote.ch:444/hg/foundation/sq-soa-idempotence</developerConnection>
-	  <tag>sq-soa-idempotence-2.0.11</tag>
+		<connection>scm:hg:https://mercurial.bank.swissquote.ch/hg/foundation/sq-soa-idempotence</connection>
+		<developerConnection>scm:hg:https://mercurial.bank.swissquote.ch/hg/foundation/sq-soa-idempotence</developerConnection>
   </scm>
 </project>
