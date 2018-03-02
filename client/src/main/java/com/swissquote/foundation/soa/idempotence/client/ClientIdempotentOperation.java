@@ -18,6 +18,8 @@ public abstract class ClientIdempotentOperation<T> {
 	private int noOfCalls;
 	private int sleepMillis;
 
+	private Long operationId = null;
+
 	public ClientIdempotentOperation() {
 		this(NUMBER_OF_CALLS, SLEEP_MILLIS_BEFORE_RETRYING);
 	}
@@ -35,7 +37,9 @@ public abstract class ClientIdempotentOperation<T> {
 	}
 
 	public T execute() {
-		Long operationId = createNew();
+		if (operationId == null) {
+			operationId = createNew();
+		}
 
 		LOGGER.debug("Using operationId = {}", operationId);
 
@@ -90,4 +94,7 @@ public abstract class ClientIdempotentOperation<T> {
 		return sleepMillis;
 	}
 
+	public Long getOperationId() {
+		return operationId;
+	}
 }
