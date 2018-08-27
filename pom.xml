@@ -213,9 +213,28 @@
 		<url>scm:hg:https://dev-tools.info.swissquote.ch:444/hg/foundation/sq-soa-idempotence</url>
 	</issueManagement>
 
+	<distributionManagement>
+		<repository>
+			<id>nexus-releases</id>
+			<name>Internal Release Repository</name>
+			<uniqueVersion>false</uniqueVersion>
+			<url>dav:https://maven.bank.swissquote.ch/nexus/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<name>Internal Snapshot Repository</name>
+			<uniqueVersion>false</uniqueVersion>
+			<url>dav:https://maven.bank.swissquote.ch/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<scm>
-		<connection>scm:hg:https://dev-tools.info.swissquote.ch:444/hg/foundation/sq-soa-idempotence</connection>
-		<developerConnection>scm:hg:https://dev-tools.info.swissquote.ch:444/hg/foundation/sq-soa-idempotence</developerConnection>
-	  <tag>HEAD</tag>
-  </scm>
+		<connection>
+			scm:hg:https://mercurial.bank.swissquote.ch/hg/foundation/sq-soa-idempotence
+		</connection>
+		<developerConnection>
+			scm:hg:https://mercurial.bank.swissquote.ch/hg/foundation/sq-soa-idempotence
+		</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
 </project>

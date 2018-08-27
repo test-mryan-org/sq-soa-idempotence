@@ -14,6 +14,7 @@
 
 	<properties>
 		<sq.artifact.type>api</sq.artifact.type>
+		<sq.service.name>MyService-V1</sq.service.name>
 	</properties>
 
 	<dependencies>

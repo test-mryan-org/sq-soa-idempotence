@@ -30,6 +30,15 @@ public class IdempotentOperationServiceImpl implements IdempotentOperationServic
 		return operationManager.createNewOperation();
 	}
 
+	/**
+	 * Method that sets externalId as identifier on the server side and returns it to the client
+	 * @return
+	 */
+	@Override
+	public Long createNewOperationWithExternalId(String externalId) {
+		return operationManager.createNewOperationWithExternalId(externalId);
+	}
+
 	@Override
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@SuppressWarnings("PMD.AvoidCatchingGenericException")

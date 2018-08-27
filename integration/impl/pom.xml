@@ -16,6 +16,7 @@
 	<properties>
 
 		<sq.artifact.type>soa</sq.artifact.type>
+		<sq.implemented.apis>com.swissquote.foundation.soa:sq-soa-idempotence-integration-api-v1</sq.implemented.apis>
 
 		<sq-logging-platform.version>3.4.6</sq-logging-platform.version>
 

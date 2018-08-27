@@ -19,12 +19,18 @@ import com.swissquote.foundation.soa.idempotence.server.Result;
 @SuppressWarnings("PMD")
 public class InMemoryIdempotentOperationManager implements IdempotentOperationManager {
 	private final ConcurrentMap<Long, Operation> map = new ConcurrentHashMap<>();
+	private final ConcurrentMap<String, Operation> mapFromExternal = new ConcurrentHashMap<>();
 
 	@Override
 	public Long createNewOperation() {
 		Operation operation = new Operation();
 		map.put(operation.getId(), operation);
 		return operation.getId();
+	}
+
+	@Override
+	public Long createNewOperationWithExternalId(String externalTransferId) {
+		return mapFromExternal.putIfAbsent(externalTransferId, new Operation()).getId();
 	}
 
 	@Override
