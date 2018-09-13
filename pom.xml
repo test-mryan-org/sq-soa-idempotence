@@ -13,7 +13,7 @@
 	<artifactId>sq-soa-idempotence</artifactId>
 	<name>${project.artifactId}</name>
 	<!--Should match sq-soa-platform-->
-	<version>2.0.12-SNAPSHOT</version>
+	<version>2.0.12</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -235,6 +235,6 @@
 		<developerConnection>
 			scm:hg:https://mercurial.bank.swissquote.ch/hg/foundation/sq-soa-idempotence
 		</developerConnection>
-		<tag>HEAD</tag>
+		<tag>sq-soa-idempotence-2.0.12</tag>
 	</scm>
 </project>
