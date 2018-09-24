@@ -1,4 +1,3 @@
-syntax:glob
 ### Maven template
 target/
 pom.xml.tag
