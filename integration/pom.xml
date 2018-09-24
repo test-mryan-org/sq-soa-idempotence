@@ -60,8 +60,8 @@
 
 
 	<scm>
-		<connection>scm:hg:https://dev-tools.info.swissquote.ch:444/hg/foundation/sq-soa-idempotence</connection>
-		<developerConnection>scm:hg:https://dev-tools.info.swissquote.ch:444/hg/foundation/sq-soa-idempotence</developerConnection>
+		<connection>scm:git:https://dev-tools.info.swissquote.ch:444/hg/foundation/sq-soa-idempotence</connection>
+		<developerConnection>scm:git:https://dev-tools.info.swissquote.ch:444/hg/foundation/sq-soa-idempotence</developerConnection>
 	  <tag>HEAD</tag>
   </scm>
 </project>
