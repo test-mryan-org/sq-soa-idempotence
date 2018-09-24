@@ -209,11 +209,11 @@
 
 	<issueManagement>
 		<system>Jira</system>
-		<url>scm:hg:https://dev-tools.info.swissquote.ch:444/hg/foundation/sq-soa-idempotence</url>
+		<url>scm:git:https://dev-tools.info.swissquote.ch:444/hg/foundation/sq-soa-idempotence</url>
 	</issueManagement>
 
 	<scm>
-		<connection>scm:hg:https://mercurial.bank.swissquote.ch/hg/foundation/sq-soa-idempotence</connection>
-		<developerConnection>scm:hg:https://mercurial.bank.swissquote.ch/hg/foundation/sq-soa-idempotence</developerConnection>
+		<connection>scm:git:https://github.com/test-mryan-org/sq-soa-idempotence</connection>
+		<developerConnection>scm:git:https://github.com/test-mryan-org/sq-soa-idempotence</developerConnection>
   </scm>
 </project>
